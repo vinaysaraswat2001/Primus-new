@@ -22,8 +22,8 @@ const [showPreviewModal, setShowPreviewModal] = useState(false);
 
 
   const dispatch = useDispatch();
-  // const selectedProjectId = useSelector(selectSelectedProjectId);
-  const selectedProjectId = "PR00250"
+  const selectedProjectId = useSelector(selectSelectedProjectId);
+  // const selectedProjectId = "PR00250"
   const documents = useSelector(selectDocumentsByProject(selectedProjectId));
   const docStatus = useSelector(selectDocumentStatusByProject(selectedProjectId));
   const docError = useSelector(selectDocumentErrorByProject(selectedProjectId));
