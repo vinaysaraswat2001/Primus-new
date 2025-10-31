@@ -382,6 +382,7 @@ const MeetingScheduler = () => {
   };
 
   const teamMembersList = [
+    { name: "Arul Murugan", email: "arul.murugan@onmeridian.com" , position:"Project Manager"},
     { name: "Vinay Saraswat", email: "vinay.saraswat@onmeridian.com" , position:"Data Scientist"},
     { name: "Harsh Bhardwaj", email: "harsh.bhardwaj@onmeridian.com", position:"Frontend Developer" },
     { name: "Shivam Gupta", email: "shivam.gupta@onmeridian.com", position:"Backend Developer" },
