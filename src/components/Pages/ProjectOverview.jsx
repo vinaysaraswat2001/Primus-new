@@ -24,6 +24,7 @@ function ProjectOverview() {
     const projectsStatus = useSelector((s) => s.project.status);
     const clientName = useSelector((s) => s.project.client_name);
     const projectData = useSelector(selectSelectedProjectData);
+    const clientType = useSelector((s) => s.project.clientType);
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedDropdownProject, setSelectedDropdownProject] = useState("");
@@ -94,7 +95,7 @@ function ProjectOverview() {
                             <option value="Completed">Completed</option>
                         </select>
                     </div> */}
-                   
+
                     <div className="relative">
                         {/* Clickable Button */}
                         <div
@@ -139,7 +140,7 @@ function ProjectOverview() {
                                     }}
                                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer"
                                 >
-                                    
+
                                     <span className="text-gray-800 text-sm"> Active </span>                      {/* <span className="text-gray-400 text-xs capitalize">{proj.status}</span> */}
 
                                 </div>
@@ -152,16 +153,19 @@ function ProjectOverview() {
                                     }}
                                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer"
                                 >
-                                                                      <span className="text-gray-800 text-sm"> Completed </span>                      {/* <span className="text-gray-400 text-xs capitalize">{proj.status}</span> */}
+                                    <span className="text-gray-800 text-sm"> Completed </span>                      {/* <span className="text-gray-400 text-xs capitalize">{proj.status}</span> */}
 
                                 </div>
                             </div>
                         )}
                     </div>
 
-                     <div className='bg-white py-[0.4rem] px-8 border-1 border-gray-800 rounded-3xl'>
-                        <p className="text-gray-700 font-medium">Govt Project</p>
+                    <div className="bg-white py-[0.4rem] px-8 border border-gray-300 rounded-3xl">
+                        <p className="text-gray-700 font-medium">
+                            {clientType ? clientType : "—"}
+                        </p>
                     </div>
+
 
                     {/* Project Dropdown */}
                     <div className="relative w-full sm:w-72">

@@ -27,21 +27,21 @@ const AdvisoryDashboard = () => {
         </div>
 
         {/* Dashboard Components Placeholder */}
-<div className="flex flex-col md:flex-row gap-6">
- 
-  <div className="w-full md:w-1/2 flex flex-col gap-1">
-    <Event limit={1} minimal /> 
-    <JobPortal minimal />
-  </div>
+        <div className="flex flex-col md:flex-row gap-6">
+
+          <div className="w-full md:w-1/2 flex flex-col gap-1">
+            <Event limit={1} minimal />
+            <JobPortal minimal />
+          </div>
 
 
-  {/* Right column: Community Connections & News Feed */}
-  <div className="w-full md:w-1/2 flex flex-col gap-6">
-    <CommunityConnections />
-    <AlumniCommunityNewsFeed />
-  </div>
-</div>
-    </div>
+          {/* Right column: Community Connections & News Feed */}
+          <div className="w-full md:w-1/2 flex flex-col gap-6">
+            <CommunityConnections />
+            <AlumniCommunityNewsFeed />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -110,28 +110,28 @@ const AlumniCommunityNewsFeed = () => {
       clientAvatar: "",
       publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
     },
-    // {
-    //   id: "3",
-    //   title: "New Research Paper on Aerospace Industry Trends",
-    //   summary:
-    //     "Our research paper delves into the latest trends in aerospace technology and defense strategies. Key insights include the shift towards sustainable fuels and AI integration.",
-    //   imageUrl:
-    //     "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=300&fit=crop",
-    //   clientName: "AeroInsights",
-    //   clientAvatar: "",
-    //   publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-    // },
-    // {
-    //   id: "4",
-    //   title: "Primus Partners Recognized for Sustainability Initiatives",
-    //   summary:
-    //     "Our initiatives in sustainable finance and environmental projects have been recognized by industry leaders. The recognition emphasizes our commitment to responsible investment practices.",
-    //   imageUrl:
-    //     "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=300&fit=crop"    ,
-    //   clientName: "GreenFinance Weekly",
-    //   clientAvatar: "",
-    //   publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
-    // },
+    {
+      id: "3",
+      title: "New Research Paper on Aerospace Industry Trends",
+      summary:
+        "Our research paper delves into the latest trends in aerospace technology and defense strategies. Key insights include the shift towards sustainable fuels and AI integration.",
+      imageUrl:
+        "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=300&fit=crop",
+      clientName: "AeroInsights",
+      clientAvatar: "",
+      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+    },
+    {
+      id: "4",
+      title: "Primus Partners Recognized for Sustainability Initiatives",
+      summary:
+        "Our initiatives in sustainable finance and environmental projects have been recognized by industry leaders. The recognition emphasizes our commitment to responsible investment practices.",
+      imageUrl:
+        "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=300&fit=crop",
+      clientName: "GreenFinance Weekly",
+      clientAvatar: "",
+      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+    },
   ];
 
   const maxItems = 10;
@@ -142,7 +142,7 @@ const AlumniCommunityNewsFeed = () => {
   );
 
   return (
-    <section className="-mt-[17rem] rounded-3xl p-4 md:p-6 bg-white/80 backdrop-blur ring-1 ring-black/5">
+    <section className="w-[41.5rem] -mt-[22.5rem] -ml-[0.4rem] rounded-3xl p-4 md:p-6 bg-white/80 backdrop-blur ring-1 ring-black/5 h-[457px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
       <div className="flex items-center justify-between mb-3 md:mb-4">
         <h2 className="text-base md:text-lg font-semibold text-gray-900">
           Community News Feed

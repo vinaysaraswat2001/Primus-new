@@ -105,11 +105,10 @@ export default function Event({ limit, minimal }) {
 
   return (
     <div
-      className={`${
-        minimal
+      className={`${minimal
           ? ""
           : "-mt-[5rem] bg-cover bg-center bg-no-repeat min-h-screen bg-gradient-to-br from-[#f6f6f3] to-[#fffdf8] p-4 sm:p-8 text-sm text-gray-700"
-      }`}
+        }`}
       style={!minimal ? { backgroundImage: `url(${bgImageds})` } : {}}
     >
       {!minimal && (
@@ -140,13 +139,15 @@ export default function Event({ limit, minimal }) {
         <div className="text-center py-10 text-gray-600">No events found.</div>
       ) : (
         <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-2/3 space-y-5">
+          <div className="w-full space-y-5">
             {minimal && limit === 1 && (
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">Upcoming Event</h2>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Upcoming Event
+                </h2>
                 <button
-                    onClick={() => navigate("/event")}
-                    className="cursor-pointer relative z-10 ml-[45rem] text-sm text-[#B8854C] font-medium hover:underline"
+                  onClick={() => navigate("/event")}
+                  className="cursor-pointer text-[#B8854C] mr-[1rem] font-medium hover:underline"
                 >
                   View All
                 </button>
@@ -156,7 +157,7 @@ export default function Event({ limit, minimal }) {
             {displayedEvents.map((event) => (
               <article
                 key={event.id}
-                className="w-[54rem] mb-[2rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 flex flex-col md:flex-row gap-4"
+                className="w-[42rem] mb-[2rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 flex flex-col md:flex-row gap-4"
               >
                 <div className="flex-shrink-0 w-full md:w-2/5 h-44 md:h-48 rounded-lg overflow-hidden">
                   <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
@@ -189,7 +190,7 @@ export default function Event({ limit, minimal }) {
           </div>
 
           {!minimal && (
-            <aside className="w-full lg:w-1/3 space-y-5">
+            <aside className="w-full space-y-5">
               <div className="bg-white rounded-xl shadow-sm p-5">
                 <h3 className="text-base font-semibold text-gray-800 mb-3">Recent Events</h3>
                 <div className="space-y-3">

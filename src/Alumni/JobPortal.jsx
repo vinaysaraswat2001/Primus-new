@@ -92,7 +92,7 @@ const JobPortal = ({ minimal }) => {
 
   if (minimal) {
     return (
-      <div className="bg-white p-4 rounded-2xl">
+      <div className="-mt-[1rem] bg-white p-4 rounded-2xl">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
           Job & Internship Opportunities
         </h2>

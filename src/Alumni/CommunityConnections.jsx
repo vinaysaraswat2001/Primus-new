@@ -62,22 +62,22 @@ export default function Community() {
 
   const suggestions = [
     {
-      name: "Rohit Malhotra",
+      name: "Rafik",
       role: "UI/UX Designer",
       img: "https://randomuser.me/api/portraits/men/32.jpg",
     },
     {
-      name: "Aarav Mehta",
+      name: "Vinay",
       role: "Data Analyst",
       img: "https://randomuser.me/api/portraits/men/45.jpg",
     },
     {
-      name: "Ananya Iyer",
+      name: "Shivani",
       role: "DevOps Engineer",
       img: "https://randomuser.me/api/portraits/women/44.jpg",
     },
     {
-      name: "Meera Nair",
+      name: "Harshita",
       role: "QA Tester",
       img: "https://randomuser.me/api/portraits/women/40.jpg",
     },
@@ -130,7 +130,7 @@ export default function Community() {
     <div
       className="min-h-screen flex flex-col sm:flex-row p-4 sm:p-6 text-sm text-gray-700"
     >
-      <div className="flex h-[20rem] w-[50rem] ml-[11rem]">
+      <div className="flex h-[19rem] w-[70rem] -ml-[2rem] -mt-[2rem]">
         {/* RIGHT SIDEBAR */}
         <aside className="w-full bg-white rounded-xl shadow-sm p-4">
           <h2 className="font-semibold text-gray-800 mb-3 text-sm">
