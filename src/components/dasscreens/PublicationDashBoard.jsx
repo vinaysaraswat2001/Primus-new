@@ -154,7 +154,7 @@ const PublicationDashBoard = () => {
 
 const filtered = useMemo(() => {
     // Only show publications from "Education" sector
-    const sectorToShow = "Healthcare";
+    const sectorToShow = "Automotive";
     const filteredPubs = publications.filter(pub => pub.sector === sectorToShow);
 
     // If none found, return empty array (or handle no-news message in JSX)

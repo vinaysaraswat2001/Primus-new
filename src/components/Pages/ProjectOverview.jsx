@@ -21,10 +21,14 @@ function ProjectOverview() {
 
     const projects = useSelector(selectProjectList);
     const selectedProjectId = useSelector((s) => s.project.selectedId);
+    const selectedProject = projects.find(p => p.project_id === selectedProjectId);
+    const clientType = selectedProject?.clientType || "—";
+    console.log("clientType",clientType)
+    console.log("Selected Project ID in Overview:", selectedProjectId);
     const projectsStatus = useSelector((s) => s.project.status);
     const clientName = useSelector((s) => s.project.client_name);
     const projectData = useSelector(selectSelectedProjectData);
-    const clientType = useSelector((s) => s.project.clientType);
+    console.log("clientType",clientType);
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedDropdownProject, setSelectedDropdownProject] = useState("");
@@ -52,6 +56,7 @@ function ProjectOverview() {
         if (statusFilter === "Completed") return status === "completed";
         return status !== "completed"; // everything else counts as Active
     });
+    
 
 
     // ✅ Auto-select first filtered project if none selected

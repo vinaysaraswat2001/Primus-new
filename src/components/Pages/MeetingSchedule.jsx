@@ -177,13 +177,21 @@ const MeetingScheduler = () => {
   const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   // New function to format date — returns UTC date (YYYY-MM-DD) so it matches meeting.date which is UTC
-  const formatDateLocal = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+  // const formatDateLocal = (date) => {
+  //   const year = date.getFullYear();
+  //   const month = String(date.getMonth() + 1).padStart(2, "0");
+  //   const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
-  };
+  //   return `${year}-${month}-${day}`;
+  // };
+  // Update this function to use local date (not UTC)
+const formatDateLocal = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -305,81 +313,157 @@ const MeetingScheduler = () => {
     setShowModal(true);
   };
 
+  // const handleSubmit = async () => {
+  //   if (!formData.title || !selectedDate || !formData.start_time || !formData.end_time) return;
+
+  //   // Build UTC Date using Date.UTC so the backend receives the same clock time (in UTC) as shown in UI
+  //   const year = selectedDate.getUTCFullYear();
+  //   const month = selectedDate.getUTCMonth(); // zero-based
+  //   const day = selectedDate.getUTCDate();
+
+  //   const [startHourStr, startMinStr] = formData.start_time.split(":");
+  //   const [endHourStr, endMinStr] = formData.end_time.split(":");
+  //   const startHour = parseInt(startHourStr, 10);
+  //   const startMin = parseInt(startMinStr, 10);
+  //   const endHour = parseInt(endHourStr, 10);
+  //   const endMin = parseInt(endMinStr, 10);
+
+  //   const startUTC = new Date(Date.UTC(year, month, day, startHour, startMin, 0));
+  //   const endUTC = new Date(Date.UTC(year, month, day, endHour, endMin, 0));
+
+  //   const meetingData = {
+  //     organizer_email,
+  //     client_emails: formData.inviteEmail,
+  //     subject: formData.title,
+  //     description: formData.description,
+  //     start_time: startUTC.toISOString(),
+  //     end_time: endUTC.toISOString(),
+  //   };
+
+  //   try {
+  //     setIsSaving(true);
+  //     if (modalType === "create") {
+  //       const result = await meetingAPI.createMeeting(meetingData);
+  //       if (result) {
+  //         setMeetings((prev) => [
+  //           ...prev,
+  //           {
+  //             id: result.meetingId || Date.now(),
+  //             title: result.subject,
+  //             date: formatDateLocal(new Date(result.start)),
+  //             start_time: result.start,
+  //             end_time: result.end,
+  //             inviteEmail: formData.inviteEmail,
+  //             description: result.description,
+  //           },
+  //         ]);
+  //         toast.success("Meeting created successfully!");
+
+  //         // 🖨️ Log the scheduled meeting details
+  //         console.log("✅ Scheduled Meeting:", {
+  //           title: result.subject,
+  //           description: result.description,
+  //           start_time: result.start,
+  //           end_time: result.end,
+  //           inviteEmail: formData.inviteEmail,
+  //           organizer_email,
+  //         });
+  //       }
+  //     } else if (modalType === "edit" && selectedMeeting) {
+  //       await meetingAPI.updateMeeting(selectedMeeting.id, meetingData);
+  //       setMeetings((prev) =>
+  //         prev.map((m) => (m.id === selectedMeeting.id ? { ...m, ...meetingData } : m))
+  //       );
+  //     }
+  //     setShowSuccess(true);
+  //     setTimeout(() => {
+  //       setShowSuccess(false);
+  //       setShowModal(false);
+  //     }, 5000);
+  //     resetForm();
+  //   } catch (error) {
+  //     console.error("Error saving meeting:", error);
+  //     toast.error("Failed to create meeting.");
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
   const handleSubmit = async () => {
-    if (!formData.title || !selectedDate || !formData.start_time || !formData.end_time) return;
+  if (!formData.title || !selectedDate || !formData.start_time || !formData.end_time) return;
 
-    // Build UTC Date using Date.UTC so the backend receives the same clock time (in UTC) as shown in UI
-    const year = selectedDate.getUTCFullYear();
-    const month = selectedDate.getUTCMonth(); // zero-based
-    const day = selectedDate.getUTCDate();
+  // FIX: Use local date components instead of UTC to avoid date shifting
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth(); // zero-based
+  const day = selectedDate.getDate();
 
-    const [startHourStr, startMinStr] = formData.start_time.split(":");
-    const [endHourStr, endMinStr] = formData.end_time.split(":");
-    const startHour = parseInt(startHourStr, 10);
-    const startMin = parseInt(startMinStr, 10);
-    const endHour = parseInt(endHourStr, 10);
-    const endMin = parseInt(endMinStr, 10);
+  const [startHourStr, startMinStr] = formData.start_time.split(":");
+  const [endHourStr, endMinStr] = formData.end_time.split(":");
+  const startHour = parseInt(startHourStr, 10);
+  const startMin = parseInt(startMinStr, 10);
+  const endHour = parseInt(endHourStr, 10);
+  const endMin = parseInt(endMinStr, 10);
 
-    const startUTC = new Date(Date.UTC(year, month, day, startHour, startMin, 0));
-    const endUTC = new Date(Date.UTC(year, month, day, endHour, endMin, 0));
+  // Create dates using local timezone but convert to UTC for backend
+  const startLocal = new Date(year, month, day, startHour, startMin, 0);
+  const endLocal = new Date(year, month, day, endHour, endMin, 0);
 
-    const meetingData = {
-      organizer_email,
-      client_emails: formData.inviteEmail,
-      subject: formData.title,
-      description: formData.description,
-      start_time: startUTC.toISOString(),
-      end_time: endUTC.toISOString(),
-    };
+  const meetingData = {
+    organizer_email,
+    client_emails: formData.inviteEmail,
+    subject: formData.title,
+    description: formData.description,
+    start_time: startLocal.toISOString(),
+    end_time: endLocal.toISOString(),
+  };
 
-    try {
-      setIsSaving(true);
-      if (modalType === "create") {
-        const result = await meetingAPI.createMeeting(meetingData);
-        if (result) {
-          setMeetings((prev) => [
-            ...prev,
-            {
-              id: result.meetingId || Date.now(),
-              title: result.subject,
-              date: formatDateLocal(new Date(result.start)),
-              start_time: result.start,
-              end_time: result.end,
-              inviteEmail: formData.inviteEmail,
-              description: result.description,
-            },
-          ]);
-          toast.success("Meeting created successfully!");
-
-          // 🖨️ Log the scheduled meeting details
-          console.log("✅ Scheduled Meeting:", {
+  try {
+    setIsSaving(true);
+    if (modalType === "create") {
+      const result = await meetingAPI.createMeeting(meetingData);
+      if (result) {
+        setMeetings((prev) => [
+          ...prev,
+          {
+            id: result.meetingId || Date.now(),
             title: result.subject,
-            description: result.description,
+            date: formatDateLocal(new Date(result.start)),
             start_time: result.start,
             end_time: result.end,
             inviteEmail: formData.inviteEmail,
-            organizer_email,
-          });
-        }
-      } else if (modalType === "edit" && selectedMeeting) {
-        await meetingAPI.updateMeeting(selectedMeeting.id, meetingData);
-        setMeetings((prev) =>
-          prev.map((m) => (m.id === selectedMeeting.id ? { ...m, ...meetingData } : m))
-        );
+            description: result.description,
+          },
+        ]);
+        toast.success("Meeting created successfully!");
+
+        // 🖨️ Log the scheduled meeting details
+        console.log("✅ Scheduled Meeting:", {
+          title: result.subject,
+          description: result.description,
+          start_time: result.start,
+          end_time: result.end,
+          inviteEmail: formData.inviteEmail,
+          organizer_email,
+        });
       }
-      setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-        setShowModal(false);
-      }, 5000);
-      resetForm();
-    } catch (error) {
-      console.error("Error saving meeting:", error);
-      toast.error("Failed to create meeting.");
-    } finally {
-      setIsSaving(false);
+    } else if (modalType === "edit" && selectedMeeting) {
+      await meetingAPI.updateMeeting(selectedMeeting.id, meetingData);
+      setMeetings((prev) =>
+        prev.map((m) => (m.id === selectedMeeting.id ? { ...m, ...meetingData } : m))
+      );
     }
-  };
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+      setShowModal(false);
+    }, 5000);
+    resetForm();
+  } catch (error) {
+    console.error("Error saving meeting:", error);
+    toast.error("Failed to create meeting.");
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   const teamMembersList = [
     { name: "Arul Murugan", email: "arul.murugan@onmeridian.com" , position:"Project Manager"},
@@ -501,7 +585,8 @@ const MeetingScheduler = () => {
         <div className="grid grid-cols-7 gap-1">
           {days.map((dayData, index) => {
             const dayMeetings = getMeetingsForDate(dayData.date);
-            const isToday = formatDateLocal(dayData.date) === formatDateLocal(new Date());  // Fixed here
+            // const isToday = formatDateLocal(dayData.date) === formatDateLocal(new Date());  // Fixed here
+            const isToday = formatDateLocal(dayData.date) === formatDateLocal(new Date());
 
             return (
               <div

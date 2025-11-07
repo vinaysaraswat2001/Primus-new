@@ -84,7 +84,7 @@ const ProjectDropdown = ({ onProjectSelect }) => {
     <div className="container ml-[0.5rem]">
       <div className="flex flex-col md:flex-row justify-center items-center gap-6 mb-6">
         <div className="">
-          <p className="bg-[#00BA6D] text-white rounded-2xl px-3 py-1 text-xs inline">HealthCare</p>
+          <p className="bg-[#00BA6D] text-white rounded-2xl px-3 py-1 text-xs inline">Automotive</p>
           <p className="text-[#102437] font-semibold text-[26px]"> Welcome back, <span className="font-bold">{clientName || "User"}</span></p>
         </div>
 
