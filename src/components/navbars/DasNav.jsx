@@ -82,7 +82,7 @@ const DasNav = () => {
         </div>
 
         {/* DESKTOP LINKS */}
-        <div className="hidden md:flex gap-8 text-[13px] font-medium bg-white rounded-full px-6 py-2 shadow-md">
+        <div className="hidden md:flex gap-6 text-[13px] font-medium bg-white rounded-full px-6 py-2 shadow-md">
           <NavLink to="dashboard" className={linkClasses} end>
             Dashboard
           </NavLink>
@@ -106,6 +106,9 @@ const DasNav = () => {
           </NavLink>
           <NavLink to="publications" className={linkClasses}>
             Publications
+          </NavLink>
+          <NavLink to="research" className={linkClasses}>
+            Research
           </NavLink>
         </div>
 
@@ -162,6 +165,9 @@ const DasNav = () => {
           </NavLink>
           <NavLink to="publications" className={linkClasses} onClick={() => setMenuOpen(false)}>
             Publications
+          </NavLink>
+          <NavLink to="research" className={linkClasses} onClick={() => setMenuOpen(false)}>
+             Research
           </NavLink>
         </div>
       )}

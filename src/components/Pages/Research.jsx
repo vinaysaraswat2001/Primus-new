@@ -1,163 +1,402 @@
-import Team from "../../assets/Team.png";
-import Primuslogo from "../../assets/primuslogo.png";
 
-const Research = () => {
-    return (
-        <div className="min-h-screen bg-gray-900 text-white">
-            {/* Hero Section */}
-            <section className="-mt-[10rem] md:h-[38rem] bg-gradient-to-r h-auto from-[#142434] to-[#142434] px-4 sm:px-8 text-white">
-                <div className="pt-[10rem] max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-                    {/* Left Content */}
-                    <div className="md:w-1/2 w-full text-center md:text-left px-2 md:px-0">
-                        <h1 className="text-[32px] sm:text-[40px] md:text-[47px] leading-snug md:leading-[3.7rem] font-semibold mb-4 md:w-[40.9rem]">
-                            Our Expertise on Research backs us with winning results! Primus Focuses on Research & Publications.
-                        </h1>
-                        <p className="mb-2 text-[15px] md:text-[16px] leading-relaxed font-medium md:w-[31rem] mx-auto md:mx-0">
-                            Beyond consulting, we are a force united, shaping tomorrow's world with solutions that resonate for generations.
-                        </p>
-                        <button className="bg-[#AD8051] text-white px-6 py-2 rounded mt-4 md:mt-2">
-                            Visit Our Website
-                        </button>
-                    </div>
 
-                    {/* Right Image */}
-                    <div className="md:w-1/2 w-full flex justify-center">
-                        <img
-                            src={Team}
-                            alt="Team"
-                            loading="lazy"
-                            className="w-full max-w-xs sm:max-w-md md:max-w-full mt-8 md:mt-[2.7rem]"
-                        />
-                    </div>
-                </div>
-            </section>
 
-            {/* Primus Partner Section */}
-            <section className="py-16 bg-white px-4 sm:px-6">
-                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-black">
-                    Primus Partners <br />
-                    <span className="text-sm font-normal">The shapers of tomorrow.</span>
-                </h2>
+import React, { useEffect, useMemo, useState } from "react";
+import { FaSearch, FaDownload, FaUser, FaTimes } from "react-icons/fa";
+import jsPDF from "jspdf";
+import { useSelector } from "react-redux";
+import bgImageds from "../../assets/bgImageds.jpg";
 
-                <p className="text-base sm:text-lg font-medium italic text-center text-[#AD8051] mx-auto max-w-4xl">
-                    “We partner with organizations to navigate complex challenges, driving transformative change. Our commitment to innovation and excellence empowers us to drive meaningful change that enhances success and benefits communities.”
-                </p>
-                <br />
-                <p className="text-base sm:text-lg text-[#AD8051] font-medium italic text-right px-4 sm:px-6 mx-auto max-w-3xl">
-                    ~ Primus Leadership Architects
-                </p>
-            </section>
+// API endpoint (FastAPI from previous step)
+// const API = "http://localhost:8000/primus/in-news/json";
+const API = `${import.meta.env.VITE_BACKEND_URL}/primus/in-news`;
+console.log(API, "this is api")
 
-            {/* Who We Are Section */}
-            <section className="py-16 px-4 bg-gray-800">
-                <p className="text-base sm:text-lg text-center max-w-7xl mx-auto leading-relaxed">
-                    Since its inception, Primus Partners has given a strong impetus to research as a practice, believing in the critical role
-                    <br className="hidden sm:block" />
-                    data and research-driven consulting have in shaping the industry’s future. We strongly believe in leveraging our vast
-                    <br className="hidden sm:block" />
-                    experience of over 300+ consultants, to shape a future with visionary insights and adaptive solutions. As part of this
-                    <br className="hidden sm:block" />
-                    approach, we strive to create knowledge products that offer detailed industry insights, recognizing that in this new
-                    <br className="hidden sm:block" />
-                    landscape, success depends on the ability to effectively translate data into insights and insights into actionable
-                    <br className="hidden sm:block" />
-                    strategies that drive tangible business outcomes.
-                </p>
-                <br />
-                <p className="text-base sm:text-lg text-center max-w-7xl mx-auto leading-relaxed">
-                    When we started with our research practice, the idea was multi-fold. While we strongly believe that research-backed
-                    <br className="hidden sm:block" />
-                    consulting models are the answer to this forever-changing dynamic world, our vision was to create a team that is
-                    <br className="hidden sm:block" />
-                    visionary and has subject expertise. So, at Primus Partners, it comes as a part of the job. In FY 2023-24, we spent close to
-                    <br className="hidden sm:block" />
-                    8.5% of our revenue on research. We try to inculcate a strong writing practice within the organisation, to inspire our
-                    <br className="hidden sm:block" />
-                    teams to be positioned to create value for the client. With an average of 0.65 publications per employee, we collectively
-                    <br className="hidden sm:block" />
-                    published 110+ publications spread over newsletters, reports, thought leadership and op-eds. In addition, 280+ published
-                    <br className="hidden sm:block" />
-                    articles had insights from our senior leadership team.
-                </p>
-            </section>
-
-            {/* What We Do Section */}
-            <section className="py-16 px-4 bg-white">
-                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-black">
-                    What We Do?
-                </h2>
-
-                <p className="text-base sm:text-lg text-center text-[#AD8051] font-medium italic mx-auto max-w-4xl">
-                    From the C-suite to the front line, we partner with clients to help them innovate more sustainably, achieve lasting gains in performance, and build workforces that will thrive for this generation and the next.
-                </p>
-
-                {/* Learn More Button */}
-                <div className="flex flex-col sm:flex-row justify-center items-center mt-10 sm:mt-12 gap-4">
-                    <button className="bg-[#441410] text-white px-6 py-3 rounded-md font-bold">
-                        Learn more about Primus
-                    </button>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#441410"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </div>
-
-                {/* Social Icons */}
-                <div className="flex justify-center mt-12 space-x-6">
-                    {/* Facebook */}
-                    <a href="#" className="text-black hover:text-[#AD8051]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                        </svg>
-                    </a>
-
-                    {/* Twitter (X) */}
-                    <a href="#" className="text-black hover:text-[#AD8051]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M14.85 12.65L21.8 4H20.16L14.05 11.3L9.03 4H2L9.32 14.31L2 22H3.64L10.09 14.98L15.36 22H22L14.85 12.65ZM11.01 13.94L10.2 12.75L4.07 5.5H7.99L12.41 11.61L13.22 12.8L19.99 20.5H16.08L11.01 13.94Z" />
-                        </svg>
-                    </a>
-
-                    {/* LinkedIn */}
-                    <a href="#" className="text-black hover:text-[#AD8051]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect x="2" y="9" width="4" height="12" />
-                            <circle cx="4" cy="4" r="2" />
-                        </svg>
-                    </a>
-
-                    {/* YouTube */}
-                    <a href="#" className="text-black hover:text-[#AD8051]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-                            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
-                        </svg>
-                    </a>
-                </div>
-            </section>
-
-            {/* Footer */}
-            <footer className="bg-[#441410] text-center py-6">
-                <img
-                    src={Primuslogo}
-                    alt="Primuspartner logo"
-                    className="inline-block h-24 w-auto mx-auto"
-                    style={{ maxWidth: '100%' }}
-                />
-            </footer>
-        </div>
-    );
+// Badge colors (added In News)
+const badgeColors = {
+  "In News": "bg-blue-600",
+  Whitepaper: "bg-green-600",
+  Guidelines: "bg-purple-600",
+  "Research Paper": "bg-orange-600",
+  Article: "bg-blue-600",
+  "Success Story": "bg-red-600",
+  Announcement: "bg-teal-600",
 };
 
-export default Research;
+// Helpers
+const clean = (s) => (s || "").trim();
+
+const toRelativeTime = (isoOrText) => {
+  if (!isoOrText) return "";
+  try {
+    const dt = new Date(isoOrText);
+    if (isNaN(dt.getTime())) return isoOrText;
+    const diff = (Date.now() - dt.getTime()) / 1000;
+    if (diff < 60) return "just now";
+    const mins = diff / 60;
+    if (mins < 60) return `${Math.floor(mins)} min ago`;
+    const hrs = mins / 60;
+    if (hrs < 24) return `${Math.floor(hrs)} hrs ago`;
+    const days = hrs / 24;
+    if (days < 30) return `${Math.floor(days)} days ago`;
+    const months = days / 30;
+    if (months < 12) return `${Math.floor(months)} months ago`;
+    const years = months / 12;
+    return `${Math.floor(years)} years ago`;
+  } catch {
+    return isoOrText;
+  }
+};
+
+const mapItemsToPublications = (items) => {
+  return (items || []).map((it, idx) => {
+    const title = clean(it.title);
+    const description = clean(it.excerpt) || title;
+    const publisher = clean(it.source) || "Primus Partners";
+    const vendor = clean(it.source) || "Primus Partners";
+    const time = toRelativeTime(it.published_at || it.date_text || "");
+    const image =
+      it.img ||
+      "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1200&h=800&fit=crop";
+    const sector = clean(it.sector) || "General";
+
+    return {
+      id: it.id || it.link || `${idx}`,
+      type: "In News",
+      title,
+      description,
+      publisher,
+      vendor,
+      time,
+      image,
+      link: it.link || "#",
+      featured: idx === 0, // first item as featured
+      sector,
+    };
+  });
+};
+
+const Publications = () => {
+  const [publications, setPublications] = useState([]); // from API
+  const [selectedPublication, setSelectedPublication] = useState(null);
+  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState(null);
+  const [error, setError] = useState(null);
+  const user = useSelector(state => state.user);
+  const [industryFilter, setIndustryFilter] = useState(""); // ✅ add this
+const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
+
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      console.log("Fetching from:", API);
+
+      const res = await fetch(API, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${user.authToken}`, // include token
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`API error ${res.status}`);
+      }
+
+      const json = await res.json();
+      console.log(json, "Fetched JSON");
+
+      const pubs = mapItemsToPublications(json.items);
+      setPublications(pubs);
+      setUpdatedAt(json.updated_at || new Date().toISOString());
+
+      console.log(pubs, "Publications mapped");
+    } catch (e) {
+      console.error("Error fetching publications:", e);
+      setError(e.message || "Failed to load");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load(false);
+    const id = setInterval(() => load(false), 30 * 60 * 1000); // 30 min
+    return () => clearInterval(id);
+  }, []);
+
+  const filtered = useMemo(() => {
+    const s = q.toLowerCase();
+    return publications.filter((p) => {
+      // Filter by search query
+      const matchesQuery =
+        [p.title, p.description, p.publisher, p.vendor, p.type]
+          .join(" ")
+          .toLowerCase()
+          .includes(s);
+
+      // Filter by sector if selected
+      const matchesIndustry = industryFilter
+        ? p.sector === industryFilter
+        : true;
+
+      return matchesQuery && matchesIndustry;
+    });
+  }, [publications, q, industryFilter]);
+
+
+  // Download as PDF
+  const handleDownloadPDF = (pub) => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(pub.title, 10, 20);
+    doc.setFontSize(12);
+    const text = `${pub.description}\n\nPublisher: ${pub.publisher}\nType: ${pub.type}\nTime: ${pub.time}\nLink: ${pub.link || "-"}`;
+    doc.text(doc.splitTextToSize(text, 180), 10, 40);
+    doc.save(`${pub.title}.pdf`);
+  };
+
+  return (
+    <>
+      <section
+        className="min-h-screen bg-cover bg-center bg-no-repeat -mt-[5rem]"
+        style={{ backgroundImage: `url(${bgImageds})` }}
+      >
+        <div className="p-6 ">
+          {/* Top Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 mt-[5rem] gap-3">
+            <h1 className="text-2xl font-bold text-gray-900">Primus Research</h1>
+            <div className="flex justify-end gap-5 items-center">
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-64">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 rounded-4xl bg-white text-black placeholder-black focus:outline-none"
+                  />
+                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black" />
+                </div>
+              </div>
+              {/* Dropdown filter */}
+              <div className="relative w-full sm:w-72">
+  {/* Dropdown trigger */}
+  <div
+    onClick={() => setIsIndustryDropdownOpen(!isIndustryDropdownOpen)}
+    className="flex items-center justify-between w-full h-10 pl-3 pr-4 py-1 rounded-3xl bg-white border text-sm text-[#667085] cursor-pointer"
+  >
+    <span>
+      {industryFilter ? industryFilter : "All Industries"}
+    </span>
+    <svg
+      className={`w-4 h-4 transition-transform duration-200 ${
+        isIndustryDropdownOpen ? "rotate-180" : ""
+      }`}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+
+  {/* Dropdown list */}
+  {isIndustryDropdownOpen && (
+    <div
+      className={`absolute fadeintop ml-[-4px] mt-2 rounded-xl py-3 px-2 flex flex-col bg-white w-full shadow-md z-10 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100`}
+    >
+      {[
+        "All", 
+        "Aerospace",
+        "Defence",
+        "Agriculture",
+        "Automotive",
+        "Chemicals",
+        "Tourism",
+        "Economy",
+        "Education",
+        "Healthcare",
+        "Infrastructure",
+        "Logistics",
+        "Manufacturing",
+        "Real Estate",
+        "Technology",
+        "Transportation",
+      ].map((industry) => (
+        <div
+          key={industry}
+          onClick={() => {
+                          setIndustryFilter(industry === "All" ? "" : industry); // "" shows all news
+                          setIsIndustryDropdownOpen(false);
+                        }}
+ 
+          className={`flex items-center justify-between cursor-pointer px-3 rounded-xl py-1 hover:bg-gray-100 ${
+            industryFilter === industry ? "bg-gray-100 font-medium" : ""
+          }`}
+        >
+          <span className="text-gray-800 text-sm">{industry}</span>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+            </div>
+
+          </div>
+
+          <div className="p-6 bg-white mt-[1rem] rounded-3xl min-h-[59vh] ">
+
+            {loading ? (
+              <div className="flex justify-center items-center h-full">
+                <p className="text-gray-500 text-lg font-medium animate-pulse">Loading...</p>
+              </div>
+            ) :
+              error ? (
+                <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg">
+                  Error: {error}
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="flex justify-center items-center h-full">
+                  <p className="text-gray-500 text-lg font-medium">No results found</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Featured Large Card */}
+                  {filtered
+                    .filter((p) => p.featured)
+                    .map((pub) => (
+                      <div
+                        key={pub.id}
+                        className="lg:col-span-2 relative rounded-xl overflow-hidden shadow hover:shadow-lg transition h-94 cursor-pointer"
+                        onClick={() => setSelectedPublication(pub)}
+                      >
+                        <img
+                          src={pub.image}
+                          alt={pub.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 flex flex-col justify-end p-5 bg-gradient-to-t from-black/60 to-transparent">
+                          <span
+                            className={`absolute top-4 left-4 ${badgeColors[pub.type] || "bg-blue-600"} text-white px-3 py-1 text-xs font-semibold rounded-full`}
+                          >
+                            {pub.type}
+                          </span>
+
+                          <h2 className="text-xl font-semibold text-white">{pub.title}</h2>
+                          <p className="text-white text-sm mt-1">{pub.description}</p>
+                          <div className="flex items-center mt-2 text-sm text-gray-200">
+                            <FaUser className="mr-2" />
+                            {pub.publisher} • {pub.time}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                  {/* Smaller Cards */}
+                  {filtered
+                    .filter((p) => !p.featured)
+                    .map((pub) => (
+                      <div
+                        key={pub.id}
+                        className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition cursor-pointer"
+                        onClick={() => setSelectedPublication(pub)}
+                      >
+                        <div className="relative">
+                          <img
+                            src={pub.image}
+                            alt={pub.title}
+                            className="w-full h-40 object-cover"
+                          />
+                          <span
+                            className={`absolute top-3 left-3 ${badgeColors[pub.type] || "bg-blue-600"} text-white px-2 py-1 text-xs font-semibold rounded-full`}
+                          >
+                            {pub.type}
+                          </span>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-semibold text-gray-900 text-sm">{pub.title}</h3>
+                          <p className="text-gray-600 text-xs mt-1 line-clamp-2">
+                            {pub.description}
+                          </p>
+                          <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+                            <span>
+                              {pub.vendor} • {pub.time}
+                            </span>
+                            <FaDownload
+                              className="cursor-pointer hover:text-blue-600"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadPDF(pub);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+          </div>
+        </div>
+
+        {/* Popup Modal */}
+        {selectedPublication && (
+          <div className="fixed inset-0 flex items-center justify-center bg-opacity-100 backdrop-blur-sm z-50">
+            <div className="bg-white py-6 rounded-xl w-full max-w-3xl h-[90vh] shadow-lg relative p-3 mx-4 overflow-y-auto hide-scrollbar">
+              <button
+                className="absolute top-3 left-3 text-gray-600 hover:text-black cursor-pointer"
+                onClick={() => setSelectedPublication(null)}
+              >
+                <FaTimes size={20} />
+              </button>
+              <div className=" my-3">
+                <img
+                  src={selectedPublication.image}
+                  alt={selectedPublication.title}
+                  className="w-full h-56 object-cover rounded-lg mb-4"
+                />
+
+                <span
+                  className={`inline-block ${badgeColors[selectedPublication.type] || "bg-blue-600"
+                    } text-white px-3 py-1 text-xs font-semibold rounded-full mb-3`}
+                >
+                  {selectedPublication.type}
+                </span>
+
+                <h2 className="text-xl font-bold text-gray-900">{selectedPublication.title}</h2>
+                <p className="text-gray-600 mt-2">{selectedPublication.description}</p>
+                <p className="text-sm text-gray-500 mt-2 flex items-center">
+                  <FaUser className="mr-2" />
+                  {selectedPublication.publisher} • {selectedPublication.time}
+                </p>
+
+                {selectedPublication.link && (
+                  <div className="mt-4">
+                    <a
+                      href={selectedPublication.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block px-4 py-2 bg-gray-900 text-white rounded-lg text-sm"
+                    >
+                      View Source
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </div>
+        )}
+      </section>
+    </>
+  );
+};
+
+export default Publications;

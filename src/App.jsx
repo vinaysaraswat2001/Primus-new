@@ -14,6 +14,7 @@ import Dashboard from "./components/dasscreens/Dashbord";
 import ProjectReachOut from "./components/Pages/ProjectReachOut";
 import Feedback from "./components/Pages/Feedback";
 import Teams from "./components/Pages/Teams";
+import Resarch from "./components/Pages/Research"
 import ProjectIssueAlert from "./components/Pages/ProjectIssueAlert";
 import Publications from "./components/Pages/Publications";
 import DocumentLibraryWorking from "./components/Pages/DocumentLibraryWorking";
@@ -26,6 +27,8 @@ import DasNav from "./components/navbars/DasNav";
 import ProtectedRoute from "./ProtectedRoute";
 import ProjectOverview from "./components/pages/ProjectOverview";
 import FeedbackAttachmentsPage from "./components/Pages/FeedBackAttachmentsPage";
+
+
 // Vendor Components
 import VendorDashboard from "./vendor/VendorDashboard";
 import PaymentTracking from "./vendor/PaymentTracking";
@@ -84,6 +87,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="details" element={<Dasone />} />
           <Route path="publications" element={<Publications />} />
+          <Route path="research" element={<Resarch />} />
           <Route path="reach-out" element={<ProtectedRoute><TicketSystem /></ProtectedRoute>} />
           <Route path="about" element={<Homepage />} />
           <Route path="edit-profile" element={<EditProfile />} />
