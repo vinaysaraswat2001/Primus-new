@@ -142,7 +142,7 @@ const AlumniCommunityNewsFeed = () => {
   );
 
   return (
-    <section className="w-[41.5rem] -mt-[22.5rem] -ml-[0.4rem] rounded-3xl p-4 md:p-6 bg-white/80 backdrop-blur ring-1 ring-black/5 h-[457px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+    <section className="w-[41.5rem] -mt-[28rem] -ml-[0.4rem] rounded-3xl p-4 md:p-6 bg-white/80 backdrop-blur ring-1 ring-black/5 h-[29rem] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
       <div className="flex items-center justify-between mb-3 md:mb-4">
         <h2 className="text-base md:text-lg font-semibold text-gray-900">
           Community News Feed

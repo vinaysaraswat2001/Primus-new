@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Search, Paperclip } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Paperclip, AlertTriangle, Clock } from "lucide-react";
 import bgImageds from "./bgImageds.jpg";
 
 const AlumniTicketSystem = () => {
@@ -13,17 +13,44 @@ const AlumniTicketSystem = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tickets, setTickets] = useState([]);
 
+  // Dummy data with SLA times and escalation level
   const dummyTickets = [
-    { id: "DD776H90", date: "08/07/24", category: "Operational", status: "Closed" },
-    { id: "DD776H91", date: "08/07/24", category: "Operational", status: "Closed" },
-    { id: "DD776H92", date: "08/07/24", category: "Operational", status: "Closed" },
-    { id: "DD776H93", date: "08/07/24", category: "Operational", status: "Closed" },
-    { id: "DD776H94", date: "08/07/24", category: "Operational", status: "Closed" },
-    { id: "DD776H95", date: "08/07/24", category: "Operational", status: "Closed" },
+    {
+      id: "DD776H90",
+      date: "08/07/24",
+      category: "Operational",
+      status: "Closed",
+      slaHours: 24,
+      createdAt: "2024-07-08T08:00:00Z",
+      escalationLevel: 0,
+    },
+    {
+      id: "DD776H91",
+      date: "08/07/24",
+      category: "Technical",
+      status: "Open",
+      slaHours: 12,
+      createdAt: "2024-07-09T10:00:00Z",
+      escalationLevel: 1,
+    },
+    {
+      id: "DD776H92",
+      date: "08/07/24",
+      category: "Billing",
+      status: "Pending",
+      slaHours: 48,
+      createdAt: "2024-07-09T11:00:00Z",
+      escalationLevel: 2,
+    },
   ];
 
-  const filteredTickets = dummyTickets.filter(
+  useEffect(() => {
+    setTickets(dummyTickets);
+  }, []);
+
+  const filteredTickets = tickets.filter(
     (t) =>
       t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.category.toLowerCase().includes(searchQuery.toLowerCase())
@@ -46,33 +73,49 @@ const AlumniTicketSystem = () => {
     }, 1500);
   };
 
+  // SLA Time Calculation
+  const getSLAStatus = (ticket) => {
+    const created = new Date(ticket.createdAt);
+    const now = new Date();
+    const hoursPassed = (now - created) / (1000 * 60 * 60);
+    const remaining = ticket.slaHours - hoursPassed;
+
+    if (remaining <= 0) return { text: "SLA Breached", color: "text-red-600" };
+    if (remaining < 3)
+      return { text: `⚠️ ${remaining.toFixed(1)}h left`, color: "text-yellow-600" };
+    return { text: `${remaining.toFixed(1)}h remaining`, color: "text-green-600" };
+  };
+
   return (
     <div
-      className="min-h-screen p-6 bg-cover bg-center -mt-[5rem] "
+      className="min-h-screen p-6 bg-cover bg-center -mt-[5rem]"
       style={{ backgroundImage: `url(${bgImageds})` }}
     >
-      <div className="max-w-7xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-[5rem] ">
+      <div className="max-w-8xl mx-auto mt-[5rem] grid grid-cols-1 lg:grid-cols-2 gap-4">
+        
         {/* --- Left: Form --- */}
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 pb-2">
+        <div className="bg-white rounded-xl shadow-xl p-6 w-full">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6 border-b pb-3">
             Need guidance? We’re just a message away.
           </h2>
 
-          {/* Select Category */}
+          {/* Category */}
           <div className="mb-5">
             <label className="block text-xs font-semibold text-gray-600 mb-2">
               Select request category*
             </label>
             <select
               value={formData.escalationType}
-              onChange={(e) => setFormData({ ...formData, escalationType: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, escalationType: e.target.value })
+              }
               className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Tell your requirements</option>
               <option value="Operational">Operational</option>
               <option value="Technical">Technical</option>
               <option value="Billing">Billing</option>
-              <option value="Billing">Others</option>
+              <option value="Other">Others</option>
             </select>
           </div>
 
@@ -85,7 +128,9 @@ const AlumniTicketSystem = () => {
               type="text"
               placeholder="Subject/ Description"
               value={formData.subject}
-              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, subject: e.target.value })
+              }
               className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -102,7 +147,9 @@ const AlumniTicketSystem = () => {
                     type="radio"
                     value={level}
                     checked={formData.urgency === level}
-                    onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, urgency: e.target.value })
+                    }
                     className="text-blue-600 focus:ring-blue-500"
                   />
                   <span>{level}</span>
@@ -120,7 +167,9 @@ const AlumniTicketSystem = () => {
               placeholder="Describe the requirements"
               rows={4}
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 resize-none pr-10"
             />
             <label className="absolute bottom-3 right-3 cursor-pointer text-gray-500 hover:text-blue-600">
@@ -134,18 +183,18 @@ const AlumniTicketSystem = () => {
             </label>
           </div>
 
-            {/* Show selected file */}
-            {formData.attachment && (
-              <div className="mb-[1rem] flex items-center mt-2 bg-gray-100 px-3 py-2 rounded-lg text-sm">
-                <span className="truncate flex-1">{formData.attachment.name}</span>
-                <button
-                  onClick={handleRemoveFile}
-                  className="cursor-pointer ml-2 text-red-500 hover:text-red-700"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
+          {/* Selected File */}
+          {formData.attachment && (
+            <div className="mb-5 flex items-center mt-2 bg-gray-100 px-3 py-2 rounded-lg text-sm">
+              <span className="truncate flex-1">{formData.attachment.name}</span>
+              <button
+                onClick={handleRemoveFile}
+                className="cursor-pointer ml-2 text-red-500 hover:text-red-700"
+              >
+                ✕
+              </button>
+            </div>
+          )}
 
           {/* Submit Button */}
           <button
@@ -154,7 +203,7 @@ const AlumniTicketSystem = () => {
             className={`w-full py-2.5 rounded-full transition flex items-center justify-center gap-2 ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#102437] hover:bg-[#081627] cursor-pointer text-white"
+                : "bg-[#102437] hover:bg-[#081627] text-white"
             }`}
           >
             {isSubmitting ? (
@@ -188,44 +237,90 @@ const AlumniTicketSystem = () => {
         </div>
 
         {/* --- Right: Ticket History --- */}
-        <div className="bg-white rounded-xl shadow p-4">
+        <div className="bg-white rounded-xl shadow-xl p-6 w-full">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Your Request History</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Your Request History
+            </h2>
 
             {/* Search */}
             <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-3 py-2 border rounded-full text-sm focus:ring-2 focus:ring-blue-500 w-60"
+                className="pl-10 pr-3 py-2 border border-gray-300 rounded-full text-sm focus:ring-2 focus:ring-blue-500 w-56"
               />
             </div>
           </div>
 
           {/* Table Header */}
-          <div className="grid grid-cols-4 gap-4 py-3 px-4 bg-gray-50 rounded-lg text-sm font-medium text-gray-700 border-b border-gray-100">
+          <div className="grid grid-cols-5  py-3 px-4 bg-gray-100 rounded-lg text-sm font-semibold text-gray-700 border-b border-gray-200">
             <div>Request ID</div>
-            <div>Date of Request</div>
-            <div>Request Category</div>
-            <div>Request Status</div>
+            <div>Date</div>
+            <div>Category</div>
+            <div>Status</div>
+            <div>SLA / Escalation</div>
           </div>
 
           {/* Table Body */}
-          <div className="max-h-96 overflow-y-scroll scrollbar-hide mt-2">
-            {filteredTickets.map((ticket, idx) => (
-              <div
-                key={idx}
-                className="grid grid-cols-4 gap-4 py-3 px-4 text-sm text-gray-700 border-b border-gray-100"
-              >
-                <div>{ticket.id}</div>
-                <div>{ticket.date}</div>
-                <div>{ticket.category}</div>
-                <div className="text-red-600">{ticket.status}</div>
-              </div>
-            ))}
+          <div className="max-h-96 overflow-y-auto scrollbar-hide mt-2">
+            {filteredTickets.map((ticket, idx) => {
+              const slaStatus = getSLAStatus(ticket);
+              return (
+                <div
+                  key={idx}
+                  className="grid grid-cols-5 gap-4 py-3 px-4 text-sm text-gray-700 border-b border-gray-100 hover:bg-gray-50 transition-all items-center rounded-lg"
+                >
+                  <div className="font-medium text-gray-800">{ticket.id}</div>
+                  <div>{ticket.date}</div>
+                  <div>{ticket.category}</div>
+                  <div
+                    className={`font-semibold ${
+                      ticket.status === "Closed"
+                        ? "text-green-600"
+                        : ticket.status === "Pending"
+                        ? "text-amber-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {ticket.status}
+                  </div>
+
+                  {/* SLA / Escalation */}
+                  <div className="flex flex-col gap-1">
+                    <span
+                      className={`flex items-center gap-1 text-xs font-medium ${slaStatus.color}`}
+                    >
+                      <Clock size={12} className="text-gray-500" />
+                      {slaStatus.text}
+                    </span>
+
+                    {/* Escalation Badge */}
+                    {ticket.escalationLevel === 0 && (
+                      <span className="text-[11px] px-2 py-[2px] rounded-full w-fit bg-green-100 text-green-600">
+                        Normal
+                      </span>
+                    )}
+                    {ticket.escalationLevel === 1 && (
+                      <span className="text-[11px] px-2 py-[2px] rounded-full w-fit bg-yellow-100 text-yellow-600 flex items-center gap-1">
+                        <AlertTriangle size={11} /> Level 1
+                      </span>
+                    )}
+                    {ticket.escalationLevel === 2 && (
+                      <span className="text-[11px] px-2 py-[2px] rounded-full w-fit bg-red-100 text-red-600 flex items-center gap-1">
+                        <AlertTriangle size={11} /> Level 2
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

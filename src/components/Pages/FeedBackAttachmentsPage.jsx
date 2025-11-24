@@ -28,15 +28,15 @@ const FeedbackAttachmentsPage = () => {
       setError(null);
 
       try {
-     const response = await axios.post(
-  "http://127.0.0.1:8000/client/get-feedback",
-  { client_email: userEmail, project_no: projectNo },
-  {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  }
-);
+        const response = await axios.post(
+          "http://127.0.0.1:8000/client/get-feedback",
+          { client_email: userEmail, project_no: projectNo },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
 
 
         if (response.data?.items) {
@@ -147,46 +147,46 @@ const FeedbackAttachmentsPage = () => {
   //   </div>
   // );
   return (
-  <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-sm border border-gray-100 p-8 mx-auto max-w-4xl h-[80vh] overflow-y-auto space-y-8 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-      Feedback Attachments for Project:{" "}
-      <span className="text-indigo-600">
-        {selectedProjectData?.description} ({projectNo})
-      </span>
-    </h2>
+    <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-sm border border-gray-100 p-8 mx-auto max-w-4xl h-[80vh] overflow-y-auto space-y-8 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        Feedback Attachments for Project:{" "}
+        <span className="text-indigo-600">
+          {selectedProjectData?.description} ({projectNo})
+        </span>
+      </h2>
 
-    {feedbackData.map((item, index) => (
-      <div
-        key={item._id || index}
-        className="border border-gray-200 rounded-2xl p-6 bg-gray-50/50 shadow-sm"
-      >
-        <div className="mb-4">
-          <h3 className="text-xl font-semibold text-gray-800">
-            {item.project_name || "Unnamed Project"}
-          </h3>
-          <p className="text-gray-500 text-sm">
-            Submitted on: {new Date(item.created_at).toLocaleDateString()} | Category:{" "}
-            <span className="capitalize">{item.category.replaceAll("_", " ")}</span>
-          </p>
+      {feedbackData.map((item, index) => (
+        <div
+          key={item._id || index}
+          className="border border-gray-200 rounded-2xl p-6 bg-gray-50/50 shadow-sm"
+        >
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold text-gray-800">
+              {item.project_name || "Unnamed Project"}
+            </h3>
+            <p className="text-gray-500 text-sm">
+              Submitted on: {new Date(item.created_at).toLocaleDateString()} | Category:{" "}
+              <span className="capitalize">{item.category.replaceAll("_", " ")}</span>
+            </p>
+          </div>
+
+          {/* Attachments Section */}
+          {renderAttachments(
+            item.feedback_attachments_appreciation_letter,
+            "Appreciation Letters"
+          )}
+          {renderAttachments(
+            item.feedback_attachments_completion_certificate,
+            "Completion Certificates"
+          )}
+          {renderAttachments(
+            item.feedback_attachments_experience_letter,
+            "Experience Letters"
+          )}
         </div>
-
-        {/* Attachments Section */}
-        {renderAttachments(
-          item.feedback_attachments_appreciation_letter,
-          "Appreciation Letters"
-        )}
-        {renderAttachments(
-          item.feedback_attachments_completion_certificate,
-          "Completion Certificates"
-        )}
-        {renderAttachments(
-          item.feedback_attachments_experience_letter,
-          "Experience Letters"
-        )}
-      </div>
-    ))}
-  </div>
-);
+      ))}
+    </div>
+  );
 
 };
 

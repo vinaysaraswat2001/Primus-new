@@ -1,14 +1,14 @@
 // src/components/Dashboard/DasNav.jsx
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { FaBars, FaTimes, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaEnvelope, FaPhone, FaUserCircle } from "react-icons/fa";
 import Primuslogo from "../../assets/primuslogo.png";
 import NotificationPopup from "../Popups/NotificationPopup";
 import bellnoti from "../../assets/bellnoti.webp";
 import { logoutUser } from "../../redux/userSlice";
-import { useDispatch } from "react-redux";
 import { persistor } from "../../redux/store";
-
+import { fetchProjects, setSelectedProject, fetchProjectDetails } from "../../redux/projectSlice";
+import { useDispatch, useSelector } from "react-redux";
 // Import modal-flow components
 import EmailVerification from "../auth/EmailVerification"; // adjust path if needed
 import ResetPassword from "../auth/ResetPassword"; // adjust path if needed
@@ -20,12 +20,30 @@ const DasNav = () => {
   // modalView controls what is shown in the centered modal:
   // null = nothing, "profile" = profile card, "forgot-otp" = EmailVerification, "forgot-reset" = ResetPassword
   const [modalView, setModalView] = useState(null);
+  const extractNameFromEmail = (email) => {
+    if (!email) return "";
+    const namePart = email.split("@")[0];             // vinay.saraswat
+    const words = namePart.split(/[._-]/);            // ["vinay", "saraswat"]
+    return words
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");                                     // "Vinay Saraswat"
+  };
+  const user = useSelector((state) => state.user);
+  console.log("this is editprologin", user)
+  // { email: "...", authToken: "...", isAuthenticated: true }
 
+  const userEmail = user?.email || "";
+  console.log("this is useremail", userEmail)
+  const userName = extractNameFromEmail(userEmail);
+  console.log("username", userName)
   const navigate = useNavigate();
   const location = useLocation();
   const isEditProfile = location.pathname === "/dashboard/edit-profile-login";
   const dispatch = useDispatch();
-
+  const projects = useSelector((s) => s.project.projects);
+  const selectedProjectId = useSelector((s) => s.project.selectedId);
+  const projectsStatus = useSelector((s) => s.project.status);
+  const clientName = useSelector((s) => s.project.client_name);
   const handleLogout = async () => {
     try {
       dispatch(logoutUser());
@@ -167,7 +185,7 @@ const DasNav = () => {
             Publications
           </NavLink>
           <NavLink to="research" className={linkClasses} onClick={() => setMenuOpen(false)}>
-             Research
+            Research
           </NavLink>
         </div>
       )}
@@ -202,27 +220,32 @@ const DasNav = () => {
               {modalView === "profile" && (
                 <>
                   <div className="relative mx-auto w-28 h-28 mb-4">
-                    <div className="absolute inset-0 bg-[#102437] rounded-full p-1">
-                      <img
-                        src="https://via.placeholder.com/100"
-                        alt="Profile"
-                        className="w-full h-full rounded-full object-cover border-4 border-white"
-                      />
+                    <div className="absolute inset-0 bg-[#102437] rounded-full p-1 flex items-center justify-center">
+                      {user?.profilePic ? (
+                        <img
+                          src={user.profilePic}
+                          alt="Profile"
+                          className="w-full h-full rounded-full object-cover border-4 border-white"
+                        />
+                      ) : (
+                        <FaUserCircle className="text-white w-24 h-24" />
+                      )}
                     </div>
                   </div>
+
 
                   <div className="bg-[#102437] text-white px-4 py-1 rounded-full text-sm font-semibold text-center mx-auto mb-3 w-fit">
                     Automotive
                   </div>
 
                   <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
-                    Mrs. Samantha Jones
+                    {clientName}
                   </h2>
 
                   <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-3">
                     {[
-                      { icon: <FaUser className="text-blue-600 text-sm" />, text: "Mrs. Samantha Jones" },
-                      { icon: <FaEnvelope className="text-blue-600 text-sm" />, text: "Samantha.jones@primuspartners.in" },
+                      { icon: <FaUser className="text-blue-600 text-sm" />, text: userName },
+                      { icon: <FaEnvelope className="text-blue-600 text-sm" />, text: userEmail },
                       { icon: <FaPhone className="text-blue-600 text-sm" />, text: "+91 7000989000" },
                     ].map((item, index) => (
                       <div

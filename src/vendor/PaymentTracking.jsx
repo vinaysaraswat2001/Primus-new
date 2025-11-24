@@ -1,18 +1,41 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchInvoiceData,
+  fetchInvoiceLines,
+  clearSelectedInvoice,
+  submitInvoice,
+  resetSubmitState,
+} from "../redux/invoiceSlice"; // ✅ adjust import path
 import bgImageds from "./bgImageds.jpg";
+
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const AUTH_TOKEN = localStorage.getItem("authToken");
 const ORGANIZER_EMAIL = "garvit.dang@onmeridian.com";
 
 const PaymentTracking = () => {
-  const [invoiceData, setInvoiceData] = useState(null);
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
-  // New: Submit form view + state
+  const { data: invoiceData, selectedInvoice, loading, error, submitSuccess } =
+    useSelector((state) => state.invoices);
+
+  // Local state
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter invoices by invoice number or status
+  const filteredInvoices = useMemo(() => {
+    if (!invoiceData?.invoices) return [];
+    return invoiceData.invoices.filter((inv) => {
+      const search = searchTerm.toLowerCase();
+      return (
+        inv.documentInvoiceNo?.toLowerCase().includes(search) ||
+        inv.status?.toLowerCase().includes(search)
+      );
+    });
+  }, [invoiceData, searchTerm]);
 
   const deriveVendorNameFromEmail = (email) => {
     if (!email) return "";
@@ -43,18 +66,20 @@ const PaymentTracking = () => {
     unit_price: "",
     discount: "",
     inc_tax: "",
-    amount: "", // computed
+    amount: "",
     proposal: "",
   });
 
-  // Compute Amount from fields
   useEffect(() => {
     const qty = Number(submitForm.quantity) || 0;
     const unit = Number(submitForm.unit_price) || 0;
     const discount = Number(submitForm.discount) || 0;
     const incTax = Number(submitForm.inc_tax) || 0;
     const computed = qty * unit - discount + incTax;
-    setSubmitForm((prev) => ({ ...prev, amount: Number.isFinite(computed) ? computed.toFixed(2) : "" }));
+    setSubmitForm((prev) => ({
+      ...prev,
+      amount: Number.isFinite(computed) ? computed.toFixed(2) : "",
+    }));
   }, [submitForm.quantity, submitForm.unit_price, submitForm.discount, submitForm.inc_tax]);
 
   const handleSubmitFormChange = (e) => {
@@ -62,74 +87,29 @@ const PaymentTracking = () => {
     setSubmitForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Fetch main dashboard API
-  const fetchInvoiceData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${BACKEND_URL}/vendor/invoice-orders-dashboard`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AUTH_TOKEN}`,
-        },
-        body: JSON.stringify({
-          vendor_email: ORGANIZER_EMAIL,
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.detail || "Failed to fetch invoices");
-      setInvoiceData(data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // ✅ Fetch invoices only if not already present
   useEffect(() => {
-    fetchInvoiceData();
-  }, []);
-
-  // Handle view click - fetch invoice line items
-  const handleViewClick = async (invoiceNo) => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${BACKEND_URL}/vendor/invoice-line-orders-dashboard`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AUTH_TOKEN}`,
-        },
-        body: JSON.stringify({
-          document_no: invoiceNo,
-          vendor_email: ORGANIZER_EMAIL,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Failed to fetch invoice lines");
-
-      setSelectedInvoice({
-        documentNo: data.documentNo,
-        subtotal: data.subtotal,
-        discounts_total: data.discounts_total,
-        net_payable: data.net_payable,
-        items: data.items || [],
-      });
-    } catch (error) {
-      console.error("Error fetching invoice lines:", error);
-    } finally {
-      setLoading(false);
+    if (!invoiceData || !invoiceData.invoices || invoiceData.invoices.length === 0) {
+      dispatch(fetchInvoiceData());
     }
+  }, [dispatch, invoiceData]);
+
+
+  const handleViewClick = (invoiceNo) => {
+    dispatch(fetchInvoiceLines(invoiceNo));
   };
 
-  const handleBackClick = () => setSelectedInvoice(null);
+  const handleBackClick = () => dispatch(clearSelectedInvoice());
 
-  // New: Submit handler (adjust endpoint as needed)
   const handleSubmitInvoice = async () => {
-    // Basic validation
-    if (!submitForm.invoice_id || !submitForm.product_service || !submitForm.quantity || !submitForm.unit_price || !submitForm.due_date) {
-      alert("Please fill all required fields: Invoice ID, Product/Service, Quantity, Unit Price, Due Date.");
+    if (
+      !submitForm.invoice_id ||
+      !submitForm.product_service ||
+      !submitForm.quantity ||
+      !submitForm.unit_price ||
+      !submitForm.due_date
+    ) {
+      alert("Please fill all required fields!");
       return;
     }
 
@@ -139,7 +119,7 @@ const PaymentTracking = () => {
       invoice_id: submitForm.invoice_id,
       product_or_service: submitForm.product_service,
       quantity: Number(submitForm.quantity),
-      due_date: submitForm.due_date, // YYYY-MM-DD
+      due_date: submitForm.due_date,
       unit_price: Number(submitForm.unit_price),
       discount: Number(submitForm.discount || 0),
       amount: Number(submitForm.amount || 0),
@@ -147,47 +127,22 @@ const PaymentTracking = () => {
       proposal_interest_statement: submitForm.proposal,
     };
 
-    try {
-      setSubmitting(true);
-      // TODO: confirm endpoint with backend
-      const res = await fetch(`${BACKEND_URL}/vendor/submit-invoice`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AUTH_TOKEN}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.detail || "Failed to submit invoice");
-
-      alert("Invoice submitted successfully!");
-      setShowSubmitForm(false);
-      // Reset form
-      setSubmitForm({
-        vendor_name: defaultVendorName,
-        invoice_id: "",
-        product_service: "",
-        quantity: "",
-        due_date: "",
-        unit_price: "",
-        discount: "",
-        inc_tax: "",
-        amount: "",
-        proposal: "",
-      });
-      // Refresh dashboard
-      fetchInvoiceData();
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Failed to submit invoice");
-    } finally {
-      setSubmitting(false);
-    }
+    setSubmitting(true);
+    await dispatch(submitInvoice(payload));
+    setSubmitting(false);
   };
 
-  if (loading) {
+  // ✅ Refresh dashboard after successful submit
+  useEffect(() => {
+    if (submitSuccess) {
+      alert("Invoice submitted successfully!");
+      setShowSubmitForm(false);
+      dispatch(fetchInvoiceData());
+      dispatch(resetSubmitState());
+    }
+  }, [submitSuccess, dispatch]);
+
+  if (loading && (!invoiceData || !invoiceData.invoices || invoiceData.invoices.length === 0))
     return (
       <div className="p-10">
         <div className="animate-pulse space-y-4">
@@ -201,11 +156,16 @@ const PaymentTracking = () => {
         </div>
       </div>
     );
-  }
 
-  if (!invoiceData) {
+  if (error)
+    return (
+      <div className="text-center text-red-500 mt-10">
+        Error: {error}
+      </div>
+    );
+
+  if (!invoiceData)
     return <div className="text-center text-gray-500 mt-10">No data available</div>;
-  }
 
   return (
     <div
@@ -474,8 +434,10 @@ const PaymentTracking = () => {
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search Invoice No..."
                   className="border rounded-full px-4 py-1 text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button
                   className="cursor-pointer bg-[#102437] text-white rounded-full px-4 py-1 text-sm"
@@ -505,30 +467,39 @@ const PaymentTracking = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {invoiceData.invoices.map((inv) => (
-                    <tr key={inv.documentInvoiceNo} className="bg-gray-50 hover:bg-gray-100 rounded-xl">
-                      <td className="px-2 py-2 font-medium">{inv.documentInvoiceNo}</td>
-                      <td className="px-2 py-2 font-medium">{inv.dueDate}</td>
-                      <td className="px-2">₹{inv.amount}</td>
-                      <td className="px-2">₹{inv.paymentDiscount}</td>
-                      <td className="px-2">
-                        {inv.status === "completed" && (
-                          <span className="text-green-600 font-medium">● Completed</span>
-                        )}
-                        {inv.status === "pending" && (
-                          <span className="text-amber-500 font-medium">● Pending</span>
-                        )}
-                        {inv.overdue && <span className="text-red-500 font-medium">● Overdue</span>}
-                      </td>
-                      <td
-                        className="px-2 text-amber-600 font-semibold cursor-pointer"
-                        onClick={() => handleViewClick(inv.documentInvoiceNo)}
-                      >
-                        View
+                  {filteredInvoices.length > 0 ? (
+                    filteredInvoices.map((inv) => (
+                      <tr key={inv.documentInvoiceNo} className="bg-gray-50 hover:bg-gray-100 rounded-xl">
+                        <td className="px-2 py-2 font-medium">{inv.documentInvoiceNo}</td>
+                        <td className="px-2 py-2 font-medium">{inv.dueDate}</td>
+                        <td className="px-2">₹{inv.amount}</td>
+                        <td className="px-2">₹{inv.paymentDiscount}</td>
+                        <td className="px-2">
+                          {inv.status === "completed" && (
+                            <span className="text-green-600 font-medium">● Completed</span>
+                          )}
+                          {inv.status === "pending" && (
+                            <span className="text-amber-500 font-medium">● Pending</span>
+                          )}
+                          {inv.overdue && <span className="text-red-500 font-medium">● Overdue</span>}
+                        </td>
+                        <td
+                          className="px-2 text-amber-600 font-semibold cursor-pointer"
+                          onClick={() => handleViewClick(inv.documentInvoiceNo)}
+                        >
+                          View
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="text-center text-gray-500 py-4">
+                        No invoices found
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>

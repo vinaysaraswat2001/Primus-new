@@ -1,35 +1,50 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || "https://cr1mcdxf-8000.inc1.devtunnels.ms/";
+const BASE_URL =
+  import.meta.env.VITE_BACKEND_URL ||
+  "https://cr1mcdxf-8000.inc1.devtunnels.ms/";
 
 const InvoiceDashboard = () => {
-  const [data, setData] = useState({
-    totalAmount: 0,
-    approvedAmount: 0,
-    pendingAmount: 0,
-    overdueAmount: 0,
-    stats: [
-      { label: "Total invoices", value: 0, percent: 100, color: "#0d1b2a" },
-      { label: "Paid invoices", value: 0, percent: 0, color: "#0d1b2a" },
-      { label: "Pending invoices", value: 0, percent: 0, color: "#0d1b2a" },
-      { label: "Overdue invoices", value: 0, percent: 0, color: "#e11d48" },
-    ],
+  const [data, setData] = useState(() => {
+    // ✅ Try to load from localStorage first
+    const stored = localStorage.getItem("invoiceDashboardData");
+    return stored
+      ? JSON.parse(stored)
+      : {
+          totalAmount: 0,
+          approvedAmount: 0,
+          pendingAmount: 0,
+          overdueAmount: 0,
+          stats: [
+            { label: "Total invoices", value: 0, percent: 100, color: "#0d1b2a" },
+            { label: "Paid invoices", value: 0, percent: 0, color: "#0d1b2a" },
+            { label: "Pending invoices", value: 0, percent: 0, color: "#0d1b2a" },
+            { label: "Overdue invoices", value: 0, percent: 0, color: "#e11d48" },
+          ],
+        };
   });
 
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("authToken");
   const vendorEmail = localStorage.getItem("Email");
 
   useEffect(() => {
+    // ✅ If data already exists (from localStorage), skip fetching
+    if (data.totalAmount > 0) {
+      return;
+    }
+
     const fetchInvoiceData = async () => {
       if (!token || !vendorEmail) return;
 
       try {
+        setLoading(true);
         const response = await axios.post(
           `${BASE_URL}/vendor/invoice-orders-dashboard`,
           { vendor_email: vendorEmail },
           {
-            headers: { 
+            headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
@@ -38,7 +53,7 @@ const InvoiceDashboard = () => {
 
         const res = response.data;
 
-        setData({
+        const newData = {
           totalAmount: res.total_amount || 0,
           approvedAmount: res.approved_amount || 0,
           pendingAmount: res.pending_amount || 0,
@@ -49,9 +64,14 @@ const InvoiceDashboard = () => {
             { label: "Pending invoices", value: res.pending_invoices, percent: res.pending_invoices_percent, color: "#0d1b2a" },
             { label: "Overdue invoices", value: res.overdue_invoices, percent: res.overdue_invoices_percent, color: "#e11d48" },
           ],
-        });
+        };
+
+        setData(newData);
+        localStorage.setItem("invoiceDashboardData", JSON.stringify(newData)); // ✅ Cache locally
       } catch (err) {
         console.error("Failed to fetch invoice dashboard:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -87,73 +107,80 @@ const InvoiceDashboard = () => {
             strokeDashoffset={dashOffset}
           />
         </svg>
-        <span className="absolute text-lg font-semibold text-gray-900">{value}</span>
+        <span className="absolute text-lg font-semibold text-gray-900">
+          {value}
+        </span>
       </div>
     );
   };
 
   return (
     <div className="bg-white rounded-3xl shadow-md p-8">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">Amount of Invoices</h2>
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        Amount of Invoices
+      </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-<div className="flex">
-  {/* LEFT COLUMN */}
-  <div className="relative pl-4">
-    {/* Full vertical line */}
-    <div className="absolute left-1.5 top-0 bottom-0 w-1 bg-[#102437]"></div>
+      {loading ? (
+        <div className="text-center text-gray-600 py-8">Loading...</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex">
+            {/* LEFT COLUMN */}
+            <div className="relative pl-4">
+              <div className="absolute left-1.5 top-0 bottom-0 w-1 bg-[#102437]"></div>
 
-    {/* Items */}
-    <div className="space-y-6 relative z-10">
-      <div className="pl-4">
-        <p className="text-gray-600 font-medium">Total Amount</p>
-        <p className="text-gray-900 font-bold text-lg">
-          ₹{data.totalAmount.toLocaleString()}
-        </p>
-      </div>
+              <div className="space-y-6 relative z-10">
+                <div className="pl-4">
+                  <p className="text-gray-600 font-medium">Total Amount</p>
+                  <p className="text-gray-900 font-bold text-lg">
+                    ₹{data.totalAmount.toLocaleString()}
+                  </p>
+                </div>
 
-      <div className="pl-4">
-        <p className="text-gray-600 font-medium">Paid Amount</p>
-        <p className="text-gray-900 font-bold text-lg">
-          ₹{data.approvedAmount.toLocaleString()}
-        </p>
-      </div>
+                <div className="pl-4">
+                  <p className="text-gray-600 font-medium">Paid Amount</p>
+                  <p className="text-gray-900 font-bold text-lg">
+                    ₹{data.approvedAmount.toLocaleString()}
+                  </p>
+                </div>
 
-      <div className="pl-4">
-        <p className="text-gray-600 font-medium">Pending Amount</p>
-        <p className="text-gray-900 font-bold text-lg">
-          ₹{data.pendingAmount.toLocaleString()}
-        </p>
-      </div>
+                <div className="pl-4">
+                  <p className="text-gray-600 font-medium">Pending Amount</p>
+                  <p className="text-gray-900 font-bold text-lg">
+                    ₹{data.pendingAmount.toLocaleString()}
+                  </p>
+                </div>
 
-      <div className="pl-4">
-        <p className="text-gray-600 font-medium">Overdue Amount</p>
-        <p className="text-red-600 font-bold text-lg">
-          ₹{data.overdueAmount.toLocaleString()}
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-        {/* RIGHT COLUMN */}
-        <div className="grid grid-cols-2 gap-4 -mt-[3rem]">
-          {data.stats.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-center bg-[#f9f8f3] rounded-2xl shadow-sm py-3"
-            >
-              <Circle
-                value={item.value}
-                percent={item.percent}
-                color={item.color}
-              />
-              <span className="text-gray-800 text-sm text-center mt-2 font-medium">
-                {item.label}
-              </span>
+                <div className="pl-4">
+                  <p className="text-gray-600 font-medium">Overdue Amount</p>
+                  <p className="text-red-600 font-bold text-lg">
+                    ₹{data.overdueAmount.toLocaleString()}
+                  </p>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="grid grid-cols-2 gap-4 -mt-[3rem]">
+            {data.stats.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center bg-[#f9f8f3] rounded-2xl shadow-sm py-3"
+              >
+                <Circle
+                  value={item.value}
+                  percent={item.percent}
+                  color={item.color}
+                />
+                <span className="text-gray-800 text-sm text-center mt-2 font-medium">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

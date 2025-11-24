@@ -27,14 +27,14 @@ const categoriesList = [
 ];
 
 const teamMembersList = [
-  { id: "vinay saraswat", name: "Vinay Saraswat" ,designation: "Data Scientist"},
+  { id: "vinay saraswat", name: "Vinay Saraswat", designation: "Data Scientist" },
   { id: "Harsh Bhardwaj", name: "Harsh Bhardwaj", designation: "Frontend Developer" },
-  { id: "Shivam Gupta", name: "Shivam Gupta" , designation: "Backend Developer" },
+  { id: "Shivam Gupta", name: "Shivam Gupta", designation: "Backend Developer" },
   { id: "Rafik Mohammad", name: "Rafik Mohammad", designation: "UI/UX Designer" },
   { id: "Garvit Dang", name: "Garvit Dang", designation: "DevOps Engineer" },
   { id: "Sneha Patel", name: "Sneha Patel", designation: "Full Stack Developer" },
-  { id: "Arjun Mehta", name: "Arjun Mehta" , designation: "Machine Learning Engineer"},
-  { id: "Pooja Iyer", name: "Pooja Iyer" , designation: "Software QA Engineer"},
+  { id: "Arjun Mehta", name: "Arjun Mehta", designation: "Machine Learning Engineer" },
+  { id: "Pooja Iyer", name: "Pooja Iyer", designation: "Software QA Engineer" },
 ];
 
 const Dropdown = ({ value, options, isOpen, onToggle, onSelect, placeholder }) => (
@@ -237,7 +237,7 @@ const ShareFeedback = ({ onFeedbackSubmit }) => {
           team_collaboration: 0,
           solution_quality: 0,
           feedback: "",
-          milestone:"",
+          milestone: "",
           attachment: null,
         }));
         setFiles({ experience: null, appreciation: null, certificate: null });
@@ -307,10 +307,9 @@ const ShareFeedback = ({ onFeedbackSubmit }) => {
         ) : (
           <div>
             {/* Form grid */}
-           <div
-  className={`grid grid-cols-1 ${
-    formData.category === "Milestone Feedback" ? "md:grid-cols-4" : "md:grid-cols-3"
-  } gap-6`}>
+            <div
+              className={`grid grid-cols-1 ${formData.category === "Milestone Feedback" ? "md:grid-cols-4" : "md:grid-cols-3"
+                } gap-6`}>
               {/* Project */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Project Name</label>
@@ -368,18 +367,18 @@ const ShareFeedback = ({ onFeedbackSubmit }) => {
                         <div
                           key={index}
                           onClick={() => {
-              if (mod.status === "completed") {
-                setSelectedModule(mod.name);
-                setFormData((prev) => ({
-                  ...prev,
-                  milestone: mod.name, // ✅ store milestone name in formData
-                }));
-                setShowModuleDropdown(false);
-              }
-            }}
+                            if (mod.status === "completed") {
+                              setSelectedModule(mod.name);
+                              setFormData((prev) => ({
+                                ...prev,
+                                milestone: mod.name, // ✅ store milestone name in formData
+                              }));
+                              setShowModuleDropdown(false);
+                            }
+                          }}
                           className={`flex items-center justify-between px-3 py-2 cursor-pointer rounded-md ${mod.status === "completed"
-                              ? "hover:bg-gray-100"
-                              : "opacity-60 cursor-not-allowed"
+                            ? "hover:bg-gray-100"
+                            : "opacity-60 cursor-not-allowed"
                             }`}
                         >
                           <div className="flex flex-col">

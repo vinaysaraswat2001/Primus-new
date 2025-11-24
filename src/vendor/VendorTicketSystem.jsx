@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search, Paperclip } from "lucide-react";
+import { Search, Paperclip, Clock } from "lucide-react";
 import bgImageds from "./bgImageds.jpg";
 
 const API_BASE = "http://127.0.0.1:8000/vendor";
@@ -19,6 +19,8 @@ const VendorTicketSystem = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [ackMessage, setAckMessage] = useState(null);
 
   const token = localStorage.getItem("authToken");
 
@@ -40,6 +42,19 @@ const VendorTicketSystem = () => {
         return res.json();
       } catch (err) {
         console.error("Error fetching tickets:", err);
+        return [];
+      }
+    },
+
+    getCategories: async () => {
+      try {
+        const res = await fetch(`${API_BASE}/categories`, {
+          headers: { Authorization: token ? `Bearer ${token}` : "" },
+        });
+        if (!res.ok) throw new Error("Failed to fetch categories");
+        return res.json();
+      } catch (err) {
+        console.error("Error fetching categories:", err);
         return [];
       }
     },
@@ -81,19 +96,27 @@ const VendorTicketSystem = () => {
     },
   };
 
-  // ✅ Fetch tickets on mount
+  // ✅ Fetch tickets & categories on mount
   useEffect(() => {
     if (!token) {
       setIsAuthenticated(false);
       return;
     }
-    const fetchTickets = async () => {
+    const fetchData = async () => {
       setLoading(true);
-      const data = await vendorAPI.getTickets();
-      setTickets(data);
+      const [ticketData, categoryData] = await Promise.all([
+        vendorAPI.getTickets(),
+        vendorAPI.getCategories(),
+      ]);
+      setTickets(ticketData);
+      setCategories(categoryData);
       setLoading(false);
     };
-    fetchTickets();
+    fetchData();
+
+    // 🔄 Real-time refresh every 30 seconds
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, [token]);
 
   // ✅ Filter tickets
@@ -107,6 +130,18 @@ const VendorTicketSystem = () => {
     );
   }, [tickets, searchQuery]);
 
+  // ✅ SLA tracking helper
+  const getSLAStatus = (ticket) => {
+    const createdTime = new Date(ticket.date_of_escalation);
+    const now = new Date();
+    const hoursPassed = (now - createdTime) / (1000 * 60 * 60);
+
+    if (hoursPassed > 4 && ticket.status !== "Closed") {
+      return { text: "SLA Breached ⏳", color: "text-red-600" };
+    }
+    return { text: "Within SLA ✅", color: "text-green-600" };
+  };
+
   // ✅ Handle form submit
   const handleSubmit = async () => {
     if (!formData.escalationType || !formData.subject || !formData.description) {
@@ -117,7 +152,10 @@ const VendorTicketSystem = () => {
     setSubmitting(true);
     try {
       await vendorAPI.createTicket(formData);
-      alert("Ticket submitted successfully!");
+
+      // Auto acknowledgment message
+      setAckMessage("✅ Your request has been received. You’ll get a confirmation email shortly.");
+
       setFormData({
         escalationType: "",
         subject: "",
@@ -135,6 +173,7 @@ const VendorTicketSystem = () => {
       alert(err.message);
     } finally {
       setSubmitting(false);
+      setTimeout(() => setAckMessage(null), 5000);
     }
   };
 
@@ -174,36 +213,49 @@ const VendorTicketSystem = () => {
     >
       <div className="max-w-7xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-[5rem]">
         {/* --- Left: Form --- */}
-        <div className="bg-white rounded-xl shadow p-4">
+        <div className="w-[35rem] bg-white rounded-xl shadow p-4">
           <h2 className="text-xl font-semibold text-gray-900 mb-6 pb-2">
             Need guidance? We’re just a message away.
           </h2>
 
-          {/* Select Category */}
-          <div className="mb-5">
-  <label className="block text-xs font-semibold text-gray-600 mb-2">
-    Select request category*
-  </label>
-  <select
-    value={formData.escalationType}
-    onChange={(e) =>
-      setFormData({ ...formData, escalationType: e.target.value })
-    }
-    className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="">Tell your requirements</option>
-    <option value="Payment Delay / Discrepancy">Payment Delay / Discrepancy</option>
-    <option value="Payment Followup">Payment Followup</option>
-    <option value="Purchase Order Issue">Purchase Order Issue</option>
-    <option value="Invoice Rejection / Clarification">Invoice Rejection / Clarification</option>
-    <option value="Meeting / Communication Delay">Meeting / Communication Delay</option>
-    <option value="Contract / Compliance Concern">Contract / Compliance Concern</option>
-    <option value="Urgent Support Request">Urgent Support Request</option>
-    <option value="Policy / Approval Escalation">Policy / Approval Escalation</option>
-    <option value="Other">Other</option>
-  </select>
-</div>
+          {/* ✅ Acknowledgment message */}
+          {ackMessage && (
+            <div className="mb-4 text-sm text-green-600 bg-green-50 p-2 rounded-lg">
+              {ackMessage}
+            </div>
+          )}
 
+          {/* Select Category (from master) */}
+          <div className="mb-5">
+            <label className="block text-xs font-semibold text-gray-600 mb-2">
+              Select request category*
+            </label>
+            <select
+              value={formData.escalationType}
+              onChange={(e) =>
+                setFormData({ ...formData, escalationType: e.target.value })
+              }
+              className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Tell your requirements</option>
+              {categories.length > 0 ? (
+                categories.map((cat, idx) => (
+                  <option key={idx} value={cat.name}>
+                    {cat.name}
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value="Payment Delay / Discrepancy">
+                    Payment Delay / Discrepancy
+                  </option>
+                  <option value="Invoice Rejection / Clarification">
+                    Invoice Rejection / Clarification
+                  </option>
+                </>
+              )}
+            </select>
+          </div>
 
           {/* Subject */}
           <div className="mb-5">
@@ -222,31 +274,27 @@ const VendorTicketSystem = () => {
           </div>
 
           {/* Priority */}
-<div className="mb-5">
-  <label className="block text-xs font-semibold text-gray-600 mb-2">
-    Priority Level
-  </label>
-  <div className="flex items-center space-x-6 text-sm">
-    {[
-      { label: "Low", value: "low" },
-      { label: "Medium", value: "medium" },
-      { label: "High", value: "high" },
-    ].map((option) => (
-      <label key={option.value} className="flex items-center space-x-2">
-        <input
-          type="radio"
-          value={option.value}
-          checked={formData.urgency === option.value}
-          onChange={(e) =>
-            setFormData({ ...formData, urgency: e.target.value })
-          }
-          className="text-blue-600 focus:ring-blue-500"
-        />
-        <span>{option.label}</span>
-      </label>
-    ))}
-  </div>
-</div>
+          <div className="mb-5">
+            <label className="block text-xs font-semibold text-gray-600 mb-2">
+              Priority Level
+            </label>
+            <div className="flex items-center space-x-6 text-sm">
+              {["Low", "Medium", "High"].map((level) => (
+                <label key={level} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    value={level}
+                    checked={formData.urgency === level}
+                    onChange={(e) =>
+                      setFormData({ ...formData, urgency: e.target.value })
+                    }
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span>{level}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
           {/* Description + File Upload */}
           <div className="mb-5 relative">
@@ -273,7 +321,6 @@ const VendorTicketSystem = () => {
             </label>
           </div>
 
-          {/* Show selected file */}
           {formData.attachment && (
             <div className="mb-[1rem] flex items-center mt-2 bg-gray-100 px-3 py-2 rounded-lg text-sm">
               <span className="truncate flex-1">{formData.attachment.name}</span>
@@ -286,7 +333,7 @@ const VendorTicketSystem = () => {
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             onClick={handleSubmit}
             disabled={submitting}
@@ -301,11 +348,12 @@ const VendorTicketSystem = () => {
         </div>
 
         {/* --- Right: Ticket History --- */}
-        <div className="bg-white rounded-xl shadow p-4">
+        <div className="-ml-[5rem] w-[45rem] bg-white rounded-xl shadow p-4">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Your Request History</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Your Request History
+            </h2>
 
-            {/* Search */}
             <div className="relative">
               <Search
                 size={18}
@@ -321,38 +369,50 @@ const VendorTicketSystem = () => {
             </div>
           </div>
 
-          {/* Table Header */}
-          <div className="grid grid-cols-4 gap-4 py-3 px-4 bg-gray-50 rounded-lg text-sm font-medium text-gray-700 border-b border-gray-100">
+          {/* Header */}
+          <div className="grid grid-cols-5 py-3 gap-2 bg-gray-50 rounded-lg text-sm font-medium text-gray-700 border-b border-gray-100">
             <div>Request ID</div>
             <div>Date of Request</div>
             <div>Request Category</div>
-            <div>Request Status</div>
+            <div>Status</div>
+            <div>SLA</div>
           </div>
 
-          {/* Table Body */}
+          {/* Body */}
           <div className="max-h-96 overflow-y-scroll scrollbar-hide mt-2">
             {loading ? (
               <div className="text-center py-4 text-gray-500">Loading...</div>
             ) : filteredTickets.length > 0 ? (
-              filteredTickets.map((ticket, idx) => (
-                <div
-                  key={idx}
-                  className="grid grid-cols-4 gap-4 py-3 px-4 text-sm text-gray-700 border-b border-gray-100"
-                >
-                  <div>{ticket.short_id}</div>
-                  <div>
-                    {new Date(ticket.date_of_escalation).toLocaleDateString("en-IN")}
-                  </div>
-                  <div>{ticket.type}</div>
+              filteredTickets.map((ticket, idx) => {
+                const slaStatus = getSLAStatus(ticket);
+                return (
                   <div
-                    className={`${
-                      ticket.status === "Closed" ? "text-red-600" : "text-green-600"
-                    }`}
+                    key={idx}
+                    className="grid grid-cols-5 gap-4 py-3 px-4 text-sm text-gray-700 border-b border-gray-100 hover:bg-gray-50 transition-all"
                   >
-                    {ticket.status}
+                    <div>{ticket.short_id}</div>
+                    <div>
+                      {new Date(
+                        ticket.date_of_escalation
+                      ).toLocaleDateString("en-IN")}
+                    </div>
+                    <div>{ticket.type}</div>
+                    <div
+                      className={`${
+                        ticket.status === "Closed"
+                          ? "text-red-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {ticket.status}
+                    </div>
+                    <div className={`flex items-center gap-1 ${slaStatus.color}`}>
+                      <Clock size={12} />
+                      {slaStatus.text}
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="text-center py-4 text-gray-500">
                 No requests found.

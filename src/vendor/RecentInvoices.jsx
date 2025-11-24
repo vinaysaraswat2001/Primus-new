@@ -1,47 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { FaFileInvoice } from "react-icons/fa";
-
-const BASE_URL =
-  import.meta.env.VITE_BACKEND_URL ||
-  "https://cr1mcdxf-8000.inc1.devtunnels.ms/";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInvoiceData } from "../redux/invoiceSlice"; // ✅ adjust import path
 
 const RecentInvoices = () => {
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState("All");
-  const [invoices, setInvoices] = useState([]);
-  const hasFetched = useRef(false); // 🧠 Prevents duplicate API calls
 
-  const token = localStorage.getItem("authToken");
-  const vendorEmail = localStorage.getItem("Email");
+  // ✅ Pull data from Redux store
+  const { data, loading, error } = useSelector((state) => state.invoices);
 
-  // Fetch invoices from API — only once per session
+  // ✅ Prevent loader if data already exists
   useEffect(() => {
-    const fetchInvoices = async () => {
-      if (hasFetched.current || !token || !vendorEmail) return;
-      hasFetched.current = true; // ✅ ensure it runs only once
+    if (!data || !data.invoices || data.invoices.length === 0) {
+      dispatch(fetchInvoiceData());
+    }
+  }, [dispatch, data]);
 
-      try {
-        const response = await axios.post(
-          `${BASE_URL}/vendor/invoice-orders-dashboard`,
-          { vendor_email: vendorEmail },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  // ✅ Handle empty/error cases safely
+  const invoices = data?.invoices || [];
 
-        setInvoices(response.data.invoices || []);
-      } catch (err) {
-        console.error("Failed to fetch invoices:", err);
-      }
-    };
-
-    fetchInvoices();
-  }, [token, vendorEmail]);
-
-  // Filtering
+  // ✅ Filter logic
   const filteredInvoices =
     filter === "All"
       ? invoices
@@ -92,56 +71,80 @@ const RecentInvoices = () => {
         <p className="text-right">Status</p>
       </div>
 
+      {/* Loader */}
+      {loading && (!data || !data.invoices || data.invoices.length === 0) && (
+        <div className="text-center text-gray-500 py-8">Loading invoices...</div>
+      )}
+
+      {/* Error */}
+      {error && (
+        <div className="text-center text-red-500 py-8">
+          Failed to load invoices: {error}
+        </div>
+      )}
+
       {/* Table Body */}
-      <div className="space-y-3">
-        {filteredInvoices.map((inv, idx) => (
-          <div
-            key={idx}
-            className="grid grid-cols-4 items-center text-sm py-2 border-b last:border-none"
-          >
-            {/* Vendor Invoice */}
-            <div className="flex items-center gap-3">
-              <span
-                className={`w-8 h-8 flex items-center justify-center rounded-full border ${iconBorder(
+      {!loading && filteredInvoices.length > 0 ? (
+        <div className="space-y-3">
+          {filteredInvoices.map((inv, idx) => (
+            <div
+              key={idx}
+              className="grid grid-cols-4 items-center text-sm py-2 border-b last:border-none"
+            >
+              {/* Vendor Invoice */}
+              <div className="flex items-center gap-3">
+                <span
+                  className={`w-8 h-8 flex items-center justify-center rounded-full border ${iconBorder(
+                    inv.status,
+                    inv.overdue
+                  )}`}
+                >
+                  <FaFileInvoice />
+                </span>
+                <p className="font-medium text-gray-800">
+                  {inv.vendorInvoiceNo}
+                </p>
+              </div>
+
+              {/* Due Date */}
+              <p
+                className={`text-center ${
+                  inv.overdue ? "text-red-500 font-medium" : "text-gray-600"
+                }`}
+              >
+                {new Date(inv.dueDate).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+
+              {/* Amount */}
+              <p className="text-center text-gray-800 font-medium">
+                ₹{inv.amountIncludingVAT?.toLocaleString()}
+              </p>
+
+              {/* Status */}
+              <p
+                className={`text-right font-semibold ${statusColor(
                   inv.status,
                   inv.overdue
                 )}`}
               >
-                <FaFileInvoice />
-              </span>
-              <p className="font-medium text-gray-800">{inv.vendorInvoiceNo}</p>
+                {inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
+              </p>
             </div>
-
-            {/* Due Date */}
-            <p
-              className={`text-center ${
-                inv.overdue ? "text-red-500 font-medium" : "text-gray-600"
-              }`}
-            >
-              {new Date(inv.dueDate).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </p>
-
-            {/* Amount */}
-            <p className="text-center text-gray-800 font-medium">
-              ₹{inv.amountIncludingVAT.toLocaleString()}
-            </p>
-
-            {/* Status */}
-            <p
-              className={`text-right font-semibold ${statusColor(
-                inv.status,
-                inv.overdue
-              )}`}
-            >
-              {inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
-            </p>
+          ))}
+        </div>
+      ) : (
+        !loading &&
+        !error &&
+        filteredInvoices.length === 0 && (
+          <div className="text-center text-gray-500 py-8">
+            No invoices found.
           </div>
-        ))}
-      </div>
+        )
+      )}
     </div>
   );
 };

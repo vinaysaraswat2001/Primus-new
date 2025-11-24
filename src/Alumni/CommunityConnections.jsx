@@ -130,9 +130,9 @@ export default function Community() {
     <div
       className="min-h-screen flex flex-col sm:flex-row p-4 sm:p-6 text-sm text-gray-700"
     >
-      <div className="flex h-[19rem] w-[70rem] -ml-[2rem] -mt-[2rem]">
+      <div className="flex h-[12.5rem] w-[70rem] -ml-[2rem] -mt-[2rem]">
         {/* RIGHT SIDEBAR */}
-        <aside className="w-full bg-white rounded-xl shadow-sm p-4">
+        <aside className="w-full bg-white rounded-xl shadow-sm p-4 h-[200px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
           <h2 className="font-semibold text-gray-800 mb-3 text-sm">
             People You May Know
           </h2>

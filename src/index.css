@@ -6,6 +6,11 @@ html, body, #root {
 
 }
 
+.highlight-date {
+  background-color: #fde9cf !important;
+}
+
+
 /* Custom Scrollbar Styling */
 .custom-scroll::-webkit-scrollbar {
   width: 8px;

@@ -3,10 +3,34 @@ import { FaUserCircle, FaEnvelope, FaPhone, FaPen, FaArrowLeft } from "react-ico
 import { useNavigate } from "react-router-dom";
 import dummyaso from "../../assets/dummyaso.webp";
 import EditProfile from './EditProfile';
+import { fetchProjects, setSelectedProject, fetchProjectDetails } from "../../redux/projectSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Editprologin = () => {
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+  // Redux state
+  const projects = useSelector((s) => s.project.projects);
+  const selectedProjectId = useSelector((s) => s.project.selectedId);
+  const projectsStatus = useSelector((s) => s.project.status);
+  const clientName = useSelector((s) => s.project.client_name);
+  const extractNameFromEmail = (email) => {
+  if (!email) return "";
+  const namePart = email.split("@")[0];             // vinay.saraswat
+  const words = namePart.split(/[._-]/);            // ["vinay", "saraswat"]
+  return words
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");                                     // "Vinay Saraswat"
+};
+    const user = useSelector((state) => state.user); 
+    console.log("this is editprologin",user)
+  // { email: "...", authToken: "...", isAuthenticated: true }
+
+  const userEmail = user?.email || "";
+  const userName = extractNameFromEmail(userEmail);
+
 
   return (
     <div className="h-[40rem] bg-[#441410] flex justify-center items-center relative overflow-hidden">

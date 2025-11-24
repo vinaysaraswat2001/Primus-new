@@ -1,78 +1,28 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+// VendorProjectDropdown.jsx
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVendorDashboard } from "../redux/vendorDashboardSlice"; // ✅ import thunk
 import purchase from "./purchase.png";
 import approved from "./approved.png";
 import cancelled from "./cancelled.png";
 import pending from "./pending.png";
 
-// Get base URL from env
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
-
 const VendorProjectDropdown = () => {
-  const [data, setData] = useState({
-    total_orders: 0,
-    open_orders: 0,
-    released_orders: 0,
-    pending_approval_orders: 0,
-  });
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { data, loading } = useSelector((state) => state.vendorDashboard);
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      const token = localStorage.getItem("authToken");
-
-      console.log("🔍 BASE_URL =", BASE_URL);
-      console.log("🔑 Token =", token);
-      console.log("📡 Making API call to:", `${BASE_URL}/vendor/purchase-orders-dashboard`);
-
-      try {
-        setLoading(true);
-
-        const response = await axios.post(
-          `${BASE_URL}/vendor/purchase-orders-dashboard`,
-          { vendor_email: "garvit.dang@onmeridian.com" },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        console.log("✅ Raw API Response:", response);
-        console.log("✅ Response Data:", response.data);
-
-        const resData = response.data;
-        setData({
-          total_orders: resData.total_orders,
-          open_orders: resData.open_orders,
-          released_orders: resData.released_orders,
-          pending_approval_orders: resData.pending_approval_orders,
-        });
-      } catch (error) {
-        console.error("❌ Error fetching dashboard data:", error);
-
-        if (error.response) {
-          // Server responded with a non-2xx status code
-          console.error("📨 Error Response Data:", error.response.data);
-          console.error("📨 Error Response Status:", error.response.status);
-          console.error("📨 Error Response Headers:", error.response.headers);
-        } else if (error.request) {
-          // Request was made but no response received
-          console.error("📡 No response received:", error.request);
-        } else {
-          // Something else happened
-          console.error("⚙️ Request setup error:", error.message);
-        }
-      } finally {
-        setLoading(false);
-        console.log("✅ Fetch attempt completed (loading set to false).");
-      }
-    };
-
-    fetchDashboard();
-  }, []);
-
+ useEffect(() => {
+  // ✅ Only fetch if data is not already available
+  if (
+    !data ||
+    (data.total_orders === 0 &&
+      data.open_orders === 0 &&
+      data.released_orders === 0 &&
+      data.pending_approval_orders === 0)
+  ) {
+    dispatch(fetchVendorDashboard("garvit.dang@onmeridian.com"));
+  }
+}, [dispatch, data]);
   const cards = [
     { title: "Total Purchase Orders", value: data.total_orders, img: purchase, bg: "bg-purple-100" },
     { title: "Open Purchase Orders", value: data.open_orders, img: approved, bg: "bg-green-100" },
