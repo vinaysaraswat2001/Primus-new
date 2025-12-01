@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 const MOCK_INVOICE_DATA = {
   total_amount: 1250000,

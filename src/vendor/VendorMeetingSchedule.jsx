@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { ChevronLeft, ChevronRight, X, Trash2, Edit3, Save } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 import calendarImg from "./image.png";
 
 const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
@@ -841,7 +841,7 @@ export default VendorMeetingSchedule;
 //   Edit3,
 //   Save,
 // } from "lucide-react";
-// import bgImageds from "./bgImageds.jpg";
+// import bgImageds from "../assets/bgImageds.jpg";
 // import calendarImg from "./image.png";
 // import toast, { Toaster } from "react-hot-toast";
 // // import { fetchProjectDetails, selectSelectedProjectData, selectSelectedProjectId, selectStatusById, selectErrorById } from "../../redux/projectSlice";

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaSearch, FaDownload, FaUser, FaTimes } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { useDispatch, useSelector } from 'react-redux'; // ✅ Import from react-redux
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 // import { fetchProjects, setSelectedProject, fetchProjectDetails } from "../../redux/projectSlice";
  
  

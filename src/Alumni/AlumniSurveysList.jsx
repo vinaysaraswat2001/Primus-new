@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 import { FaStar } from "react-icons/fa";
 
 const AlumniSurveysList = () => {

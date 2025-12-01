@@ -15,6 +15,8 @@ const VendorDashboard = () => {
 
   const vendorEmail = localStorage.getItem("Email");
   const token = localStorage.getItem("authToken");
+  const vendor_type = localStorage.getItem("vendorType");
+  const vendor_Name = localStorage.getItem("vendorName");
 
   // Fetch vendor dashboard data
 //   useEffect(() => {
@@ -51,12 +53,25 @@ const VendorDashboard = () => {
       className="lg:col-span-2 space-y-6 p-6 mt-0.1 overflow-y-auto bg-cover bg-center bg-no-repeat -mt-[5rem]"
       style={{ backgroundImage: `url(${bgImageds})` }}
     >
+      
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 mt-[5rem]">
-        {/* LEFT – Welcome Message */}
-        <div className="text-[#102437] font-semibold text-[26px]">
-          Welcome back, <span className="font-bold">First Up Consultant</span>
-        </div>
-      </div>
+
+    {/* LEFT – Welcome Message */}
+    <div className="text-[#102437] font-semibold text-[26px] flex flex-col">
+      
+      {/* Vendor Type Badge */}
+      <span className="bg-[#00BA6D] text-white rounded-2xl px-3 py-1 text-xs w-fit mb-1">
+        {vendor_type}
+      </span>
+      
+      {/* Welcome + Vendor Name */}
+      <span>
+        Welcome back, <span className="font-bold">{vendor_Name}</span>
+      </span>
+    </div>
+
+</div>
+
 
       {/* Project Section */}
       <div>

@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-// import bgImageds from "./bgImageds.jpg";
+// import bgImageds from "../assets/bgImageds.jpg";
 
 // const allTeamMembers = [
 //   {
@@ -227,7 +227,7 @@
 
 
 import React, { useState } from "react";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 const allTeamMembers = [
   {

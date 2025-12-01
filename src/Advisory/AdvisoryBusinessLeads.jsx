@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaDownload } from "react-icons/fa";
 import { HiOutlineDocumentText } from "react-icons/hi";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 const AdvisoryBusinessLeads = () => {
   const [leads, setLeads] = useState([

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Star, ChevronDown } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 import axios from "axios";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;

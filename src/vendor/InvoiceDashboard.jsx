@@ -6,23 +6,17 @@ const BASE_URL =
   "https://cr1mcdxf-8000.inc1.devtunnels.ms/";
 
 const InvoiceDashboard = () => {
-  const [data, setData] = useState(() => {
-    // ✅ Try to load from localStorage first
-    const stored = localStorage.getItem("invoiceDashboardData");
-    return stored
-      ? JSON.parse(stored)
-      : {
-          totalAmount: 0,
-          approvedAmount: 0,
-          pendingAmount: 0,
-          overdueAmount: 0,
-          stats: [
-            { label: "Total invoices", value: 0, percent: 100, color: "#0d1b2a" },
-            { label: "Paid invoices", value: 0, percent: 0, color: "#0d1b2a" },
-            { label: "Pending invoices", value: 0, percent: 0, color: "#0d1b2a" },
-            { label: "Overdue invoices", value: 0, percent: 0, color: "#e11d48" },
-          ],
-        };
+  const [data, setData] = useState({
+    totalAmount: 0,
+    approvedAmount: 0,
+    pendingAmount: 0,
+    overdueAmount: 0,
+    stats: [
+      { label: "Total invoices", value: 0, percent: 100, color: "#0d1b2a" },
+      { label: "Paid invoices", value: 0, percent: 0, color: "#0d1b2a" },
+      { label: "Pending invoices", value: 0, percent: 0, color: "#0d1b2a" },
+      { label: "Overdue invoices", value: 0, percent: 0, color: "#e11d48" },
+    ],
   });
 
   const [loading, setLoading] = useState(false);
@@ -30,16 +24,12 @@ const InvoiceDashboard = () => {
   const vendorEmail = localStorage.getItem("Email");
 
   useEffect(() => {
-    // ✅ If data already exists (from localStorage), skip fetching
-    if (data.totalAmount > 0) {
-      return;
-    }
-
     const fetchInvoiceData = async () => {
       if (!token || !vendorEmail) return;
 
       try {
         setLoading(true);
+
         const response = await axios.post(
           `${BASE_URL}/vendor/invoice-orders-dashboard`,
           { vendor_email: vendorEmail },
@@ -59,15 +49,34 @@ const InvoiceDashboard = () => {
           pendingAmount: res.pending_amount || 0,
           overdueAmount: res.overdue_amount || 0,
           stats: [
-            { label: "Total invoices", value: res.total_invoices, percent: 100, color: "#0d1b2a" },
-            { label: "Paid invoices", value: res.paid_invoices, percent: res.paid_invoices_percent, color: "#0d1b2a" },
-            { label: "Pending invoices", value: res.pending_invoices, percent: res.pending_invoices_percent, color: "#0d1b2a" },
-            { label: "Overdue invoices", value: res.overdue_invoices, percent: res.overdue_invoices_percent, color: "#e11d48" },
+            {
+              label: "Total invoices",
+              value: res.total_invoices,
+              percent: 100,
+              color: "#0d1b2a",
+            },
+            {
+              label: "Paid invoices",
+              value: res.paid_invoices,
+              percent: res.paid_invoices_percent,
+              color: "#0d1b2a",
+            },
+            {
+              label: "Pending invoices",
+              value: res.pending_invoices,
+              percent: res.pending_invoices_percent,
+              color: "#0d1b2a",
+            },
+            {
+              label: "Overdue invoices",
+              value: res.overdue_invoices,
+              percent: res.overdue_invoices_percent,
+              color: "#e11d48",
+            },
           ],
         };
 
         setData(newData);
-        localStorage.setItem("invoiceDashboardData", JSON.stringify(newData)); // ✅ Cache locally
       } catch (err) {
         console.error("Failed to fetch invoice dashboard:", err);
       } finally {
@@ -78,6 +87,7 @@ const InvoiceDashboard = () => {
     fetchInvoiceData();
   }, [token, vendorEmail]);
 
+  // Circle Component
   const Circle = ({ value, percent, color }) => {
     const radius = 40;
     const strokeWidth = 10;
@@ -124,12 +134,13 @@ const InvoiceDashboard = () => {
         <div className="text-center text-gray-600 py-8">Loading...</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* LEFT COLUMN */}
           <div className="flex">
-            {/* LEFT COLUMN */}
             <div className="relative pl-4">
               <div className="absolute left-1.5 top-0 bottom-0 w-1 bg-[#102437]"></div>
 
               <div className="space-y-6 relative z-10">
+                {/* Total */}
                 <div className="pl-4">
                   <p className="text-gray-600 font-medium">Total Amount</p>
                   <p className="text-gray-900 font-bold text-lg">
@@ -137,6 +148,7 @@ const InvoiceDashboard = () => {
                   </p>
                 </div>
 
+                {/* Approved */}
                 <div className="pl-4">
                   <p className="text-gray-600 font-medium">Paid Amount</p>
                   <p className="text-gray-900 font-bold text-lg">
@@ -144,6 +156,7 @@ const InvoiceDashboard = () => {
                   </p>
                 </div>
 
+                {/* Pending */}
                 <div className="pl-4">
                   <p className="text-gray-600 font-medium">Pending Amount</p>
                   <p className="text-gray-900 font-bold text-lg">
@@ -151,6 +164,7 @@ const InvoiceDashboard = () => {
                   </p>
                 </div>
 
+                {/* Overdue */}
                 <div className="pl-4">
                   <p className="text-gray-600 font-medium">Overdue Amount</p>
                   <p className="text-red-600 font-bold text-lg">

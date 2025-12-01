@@ -28,6 +28,16 @@ const EmailVerification = ({ email, otpSessionId, onBack, onVerified, userType }
  
       if (data.access_token) {
         toast.success("🎉 OTP verified successfully!");
+
+        // ⭐ Save vendor type only if userType is vendor
+        if (userType === "vendor" && data.vendor_type) {
+          localStorage.setItem("vendorType", data.vendor_type);
+        }
+
+        if (userType === "vendor" && data.vendor_name) {
+          localStorage.setItem("vendorName", data.vendor_name);
+        }
+        
         onVerified(data.access_token);
       } else {
         toast.error(data.message || "❌ Invalid OTP");

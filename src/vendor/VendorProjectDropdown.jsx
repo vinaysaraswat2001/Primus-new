@@ -7,9 +7,11 @@ import approved from "./approved.png";
 import cancelled from "./cancelled.png";
 import pending from "./pending.png";
 
+
 const VendorProjectDropdown = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.vendorDashboard);
+  const vendorEmail = localStorage.getItem("Email");
 
  useEffect(() => {
   // ✅ Only fetch if data is not already available
@@ -20,7 +22,7 @@ const VendorProjectDropdown = () => {
       data.released_orders === 0 &&
       data.pending_approval_orders === 0)
   ) {
-    dispatch(fetchVendorDashboard("garvit.dang@onmeridian.com"));
+    dispatch(fetchVendorDashboard(vendorEmail));
   }
 }, [dispatch, data]);
   const cards = [

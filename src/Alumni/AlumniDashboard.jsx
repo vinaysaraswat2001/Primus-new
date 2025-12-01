@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 import JobPortal from "./JobPortal"
 import AlumniProjectDropdown from "./AlumniProjectDropdown";
 import CommunityConnections from "./CommunityConnections"

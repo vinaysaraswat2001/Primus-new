@@ -12,7 +12,7 @@ import {
   FaUsers,
   FaPlus,
 } from "react-icons/fa";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 export default function Community() {
   const [showPostModal, setShowPostModal] = useState(false);

@@ -7,12 +7,12 @@ import {
   submitInvoice,
   resetSubmitState,
 } from "../redux/invoiceSlice"; // ✅ adjust import path
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const AUTH_TOKEN = localStorage.getItem("authToken");
-const ORGANIZER_EMAIL = "garvit.dang@onmeridian.com";
+const ORGANIZER_EMAIL = localStorage.getItem("Email");
 
 const PaymentTracking = () => {
   const dispatch = useDispatch();
@@ -89,11 +89,8 @@ const PaymentTracking = () => {
 
   // ✅ Fetch invoices only if not already present
   useEffect(() => {
-    if (!invoiceData || !invoiceData.invoices || invoiceData.invoices.length === 0) {
-      dispatch(fetchInvoiceData());
-    }
-  }, [dispatch, invoiceData]);
-
+  dispatch(fetchInvoiceData());
+}, [dispatch]);
 
   const handleViewClick = (invoiceNo) => {
     dispatch(fetchInvoiceLines(invoiceNo));
@@ -399,7 +396,7 @@ const PaymentTracking = () => {
           {/* LEFT CARD */}
           <div className="w-[25rem] bg-white rounded-2xl shadow-md p-6">
             <div className="flex justify-between items-start">
-              <h2 className="text-gray-600 font-medium">Totall Invoice Value</h2>
+              <h2 className="text-gray-600 font-medium">Total Invoice Value</h2>
               <button className="text-gray-400 hover:text-gray-600">⋮</button>
             </div>
 

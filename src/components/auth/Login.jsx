@@ -48,18 +48,39 @@ const Login = () => {
   }, [dispatch, navigate]);
  
   // -------- Helper: Get dashboard route --------
+  // const getDashboardRoute = (type) => {
+  //   switch (type) {
+  //     case "vendor":
+  //       return "/vendor-dashboard";
+  //     case "alumni":
+  //       return "/alumni-home";
+  //     case "advisor":
+  //       return "/advisory-dashboard";
+  //     default:
+  //       return "/dashboard";
+  //   }
+  // };
   const getDashboardRoute = (type) => {
-    switch (type) {
-      case "vendor":
-        return "/vendor-dashboard";
-      case "alumni":
-        return "/alumni-home";
-      case "advisor":
-        return "/advisory-dashboard";
-      default:
-        return "/dashboard";
-    }
-  };
+  const vendorType = localStorage.getItem("vendorType")?.toUpperCase();
+
+  switch (type) {
+    case "vendor":
+      if (vendorType === "TRAVEL") {
+        return "/vendor-travel-dashboard";
+      }
+      return "/vendor-dashboard";
+
+    case "alumni":
+      return "/alumni-home";
+
+    case "advisor":
+      return "/advisory-dashboard";
+
+    default:
+      return "/dashboard";
+  }
+};
+
  
   // -------- Handle login --------
   const handleLoginClick = async () => {
@@ -96,7 +117,20 @@ const Login = () => {
   const handleOtpVerified = (jwtToken) => {
     dispatch(setUser({ email, authToken: jwtToken, userType }));
     localStorage.setItem("userType", userType);
-    navigate(getDashboardRoute(userType));
+    // navigate(getDashboardRoute(userType));
+    // ⭐ Get vendor type from localStorage (set during OTP verification)
+    const vendorType = localStorage.getItem("vendorType");
+
+    if (userType === "vendor") {
+      if (vendorType === "TRAVEL") {
+        navigate("/vendor-travel-dashboard");   // ⭐ Travel dashboard
+      } else {
+        navigate("/vendor-dashboard");          // ⭐ Normal vendor dashboard
+      }
+    } else {
+      navigate(getDashboardRoute(userType));    // ⭐ Other user types
+    }
+
   };
  
   // -------- Handle CAPTCHA --------

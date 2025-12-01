@@ -9,7 +9,7 @@ import {
   Edit3,
   Save,
 } from "lucide-react";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 import toast, { Toaster } from "react-hot-toast";
 // import { fetchProjectDetails, selectSelectedProjectData, selectSelectedProjectId, selectStatusById, selectErrorById } from "../../redux/projectSlice";
 import calender from './calender.png'

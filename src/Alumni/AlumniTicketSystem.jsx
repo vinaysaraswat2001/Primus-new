@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, Paperclip, AlertTriangle, Clock } from "lucide-react";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 const AlumniTicketSystem = () => {
   const [formData, setFormData] = useState({

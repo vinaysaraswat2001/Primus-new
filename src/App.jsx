@@ -37,6 +37,8 @@ import VendorTicketingSystem from "./vendor/VendorTicketSystem";
 import VendorFeedback from "./vendor/VendorFeedback";
 import VendorPublications from "./vendor/VendorPublications";
 import VendorNav from "./vendor/VendorNav";
+import TravelVendorDashboard from "./vendor/TravelVendorDashboard";
+
  
  
 
@@ -62,6 +64,8 @@ import AlumniPublications from "./Alumni/AlumniPublications"
  
 function App() {
   const [showAnimation, setShowAnimation] = useState(true);
+
+  const vendorType = localStorage.getItem("vendorType");
  
   useEffect(() => {
     const timer = setTimeout(() => setShowAnimation(false), 5000);
@@ -105,12 +109,58 @@ function App() {
  
         {/* -------- Vendor Dashboard Routes -------- */}
         <Route path="/" element={<VendorNav />}>
-          <Route path="vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
-          <Route path="vendor-invoice" element={<ProtectedRoute><PaymentTracking /></ProtectedRoute>} />
-          <Route path="vendor-meeting-schedule" element={<ProtectedRoute><VendorMeetingSchedule /></ProtectedRoute>} />
-          <Route path="vendor-reach-out" element={<ProtectedRoute><VendorTicketingSystem/></ProtectedRoute>} />
-          <Route path="vendor-share-feedback" element={<ProtectedRoute><VendorFeedback/></ProtectedRoute>} />
-          <Route path="vendor-publications" element={<ProtectedRoute><VendorPublications/></ProtectedRoute>} />
+          {/* <Route path="vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} /> */}
+
+
+          {/* If vendor is TRAVEL type */}
+          {vendorType === "TRAVEL" ? (
+            <>
+              <Route
+                path="vendor-travel-dashboard"
+                element={
+                  <ProtectedRoute>
+                    <TravelVendorDashboard />
+                  </ProtectedRoute>
+                }
+              />
+        
+              {/* Travel vendors should NOT see invoices or other vendor pages */}
+              {/* BLOCK SNIP — do not include vendor-invoice, vendor-meeting, vendor-reach-out, etc */}
+            </>
+          ) : (
+            <>
+              {/* Normal vendor */}
+              <Route
+                path="vendor-dashboard"
+                element={
+                  <ProtectedRoute>
+                    <VendorDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              </>
+            )}
+        
+            {vendorType !== "TRAVEL" && (
+              <Route
+                path="vendor-invoice"
+                element={
+                  <ProtectedRoute>
+                    <PaymentTracking />
+                  </ProtectedRoute>
+                }
+              />
+            )}
+
+            {/* <Route path="vendor-invoice" element={<ProtectedRoute><PaymentTracking /></ProtectedRoute>} /> */}
+            <Route path="vendor-meeting-schedule" element={<ProtectedRoute><VendorMeetingSchedule /></ProtectedRoute>} />
+            <Route path="vendor-reach-out" element={<ProtectedRoute><VendorTicketingSystem/></ProtectedRoute>} />
+            <Route path="vendor-share-feedback" element={<ProtectedRoute><VendorFeedback/></ProtectedRoute>} />
+            <Route path="vendor-publications" element={<ProtectedRoute><VendorPublications/></ProtectedRoute>} />
+            {/* <Route path="vendor-travel-dashboard" element={<ProtectedRoute><TravelVendorDashboard/></ProtectedRoute>} /> */}
+
+          
+    
         </Route>
  
         {/* -------- Advisory Dashboard Routes -------- */}

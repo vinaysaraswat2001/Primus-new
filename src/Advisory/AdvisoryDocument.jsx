@@ -3,7 +3,7 @@
 // import { IoMdDownload } from "react-icons/io";
 // import { FaSearch } from "react-icons/fa";
 // import { saveAs } from "file-saver";
-// import bgImageds from "./bgImageds.jpg";
+// import bgImageds from "../assets/bgImageds.jpg";
 // import printer from './printer.png'
  
 // import {
@@ -225,7 +225,7 @@
 
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 import histroherobg from "./histroherobg.png";
 
 const AdvisoryDocument = () => {

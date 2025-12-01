@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const AUTH_TOKEN = localStorage.getItem("authToken");
-const ORGANIZER_EMAIL = "garvit.dang@onmeridian.com";
 
-// Fetch dashboard
 export const fetchInvoiceData = createAsyncThunk(
   "invoices/fetchDashboard",
   async (_, { rejectWithValue }) => {
     try {
+      const AUTH_TOKEN = localStorage.getItem("authToken");
+      const ORGANIZER_EMAIL = localStorage.getItem("Email");
+
       const response = await fetch(`${BACKEND_URL}/vendor/invoice-orders-dashboard`, {
         method: "POST",
         headers: {
@@ -17,6 +17,7 @@ export const fetchInvoiceData = createAsyncThunk(
         },
         body: JSON.stringify({ vendor_email: ORGANIZER_EMAIL }),
       });
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Failed to fetch invoices");
       return data;
@@ -26,11 +27,15 @@ export const fetchInvoiceData = createAsyncThunk(
   }
 );
 
+
 // Fetch line details
 export const fetchInvoiceLines = createAsyncThunk(
   "invoices/fetchInvoiceLines",
   async (invoiceNo, { rejectWithValue }) => {
     try {
+      const AUTH_TOKEN = localStorage.getItem("authToken");
+      const ORGANIZER_EMAIL = localStorage.getItem("Email");
+
       const res = await fetch(`${BACKEND_URL}/vendor/invoice-line-orders-dashboard`, {
         method: "POST",
         headers: {

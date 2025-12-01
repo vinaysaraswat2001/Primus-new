@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search, Paperclip, Clock } from "lucide-react";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 const API_BASE = "http://127.0.0.1:8000/vendor";
 

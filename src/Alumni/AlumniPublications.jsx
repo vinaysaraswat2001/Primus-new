@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaSearch, FaDownload, FaUser, FaTimes } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { useSelector } from "react-redux";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 // API endpoint (FastAPI from previous step)
 // const API = " http://127.0.0.1:8000/primus/in-news/json";

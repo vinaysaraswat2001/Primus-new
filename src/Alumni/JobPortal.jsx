@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaFilter, FaShareAlt, FaWhatsapp, FaEnvelope, FaRegCopy } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
-import bgImageds from "./bgImageds.jpg";
+import bgImageds from "../assets/bgImageds.jpg";
 
 const JobPortal = ({ minimal }) => {
   const location = useLocation();

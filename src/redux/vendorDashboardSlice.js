@@ -4,6 +4,7 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
+
 // --- Thunk to fetch vendor dashboard data
 export const fetchVendorDashboard = createAsyncThunk(
   "vendorDashboard/fetch",
@@ -20,6 +21,7 @@ export const fetchVendorDashboard = createAsyncThunk(
           },
         }
       );
+      console.log("Vendor dashboard response:", response.data);
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Error fetching dashboard data");

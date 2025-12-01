@@ -34,6 +34,8 @@ const userSlice = createSlice({
       localStorage.removeItem("Email");
       localStorage.removeItem("authToken");
       localStorage.removeItem("userType");
+      localStorage.removeItem("vendorType"); // clear additional info
+      localStorage.removeItem("vendorName");
     },
   },
 });
