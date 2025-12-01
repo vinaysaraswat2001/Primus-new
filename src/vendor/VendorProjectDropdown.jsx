@@ -2,10 +2,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchVendorDashboard } from "../redux/vendorDashboardSlice"; // ✅ import thunk
-import purchase from "./purchase.png";
-import approved from "./approved.png";
-import cancelled from "./cancelled.png";
-import pending from "./pending.png";
+import purchase from "../assets/purchase.png";
+import approved from "../assets/approved.png";
+import cancelled from "../assets/cancelled.png";
+import pending from "../assets/pending.png";
 
 
 const VendorProjectDropdown = () => {

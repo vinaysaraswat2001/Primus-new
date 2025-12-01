@@ -226,7 +226,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import bgImageds from "../assets/bgImageds.jpg";
-import histroherobg from "./histroherobg.png";
+import histroherobg from "../assets/histroherobg.png";
 
 const AdvisoryDocument = () => {
   const [searchQuery, setSearchQuery] = useState("");

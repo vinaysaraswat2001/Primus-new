@@ -12,7 +12,7 @@ import {
 import bgImageds from "../assets/bgImageds.jpg";
 import toast, { Toaster } from "react-hot-toast";
 // import { fetchProjectDetails, selectSelectedProjectData, selectSelectedProjectId, selectStatusById, selectErrorById } from "../../redux/projectSlice";
-import calender from './calender.png'
+import calender from '../assets/calender.png'
  
 const authToken = localStorage.getItem("authToken");
 console.log(authToken,"auth");

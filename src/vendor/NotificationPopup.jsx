@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaBell, FaTimes } from "react-icons/fa";
-import dummyaso from "./dummyaso.webp"; // Use real images if available
+import dummyaso from "../assets/dummyaso.webp"; // Use real images if available
 
 const NotificationPopup = () => {
   const [open, setOpen] = useState(false);

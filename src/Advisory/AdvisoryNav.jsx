@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaTimes, FaUser } from "react-icons/fa";
-import Primuslogo from "./primuslogo.png";
+import Primuslogo from "../assets/primuslogo.png";
 import NotificationPopup from "./NotificationPopup";
-import bellnoti from "./bellnoti.webp";
+import bellnoti from "../assets/bellnoti.webp";
 import {logoutUser} from "../redux/userSlice"
 import { useDispatch } from "react-redux";
 import { persistor } from "../redux/store"; //
